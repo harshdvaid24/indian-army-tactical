@@ -213,45 +213,31 @@
             </Text>
         </PartText>
 
-        <!-- Heart rate complication (slot 100) -->
-        <ComplicationSlot slotId="100" x="72" y="124" width="180" height="28"
-            name="@string/complication_hr"
-            supportedTypes="SHORT_TEXT RANGED_VALUE">
+        <!-- Heart rate - direct system data expression (no complication binding needed) -->
+        <PartText x="72" y="124" width="180" height="28">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <DefaultProviderPolicy defaultSystemDataSource="HEART_RATE"
-                defaultDataSourceType="SHORT_TEXT" />
-            <BoundingOval x="0" y="0" width="180" height="28" />
-            <Complication type="SHORT_TEXT">
-                <Text align="START">
-                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL"
-                          letterSpacing="0.06" color="[CONFIGURATION.accentColor.0]">
-                        <Template><![CDATA[HR:%s BPM]]>
-                            <Parameter expression="[COMPLICATION.TEXT]" />
-                        </Template>
-                    </Font>
-                </Text>
-            </Complication>
-        </ComplicationSlot>
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL"
+                      letterSpacing="0.06" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[HR:%d BPM]]>
+                        <Parameter expression="[HEART_RATE]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
 
-        <!-- Step count complication (slot 101) -->
-        <ComplicationSlot slotId="101" x="260" y="124" width="120" height="28"
-            name="@string/complication_steps"
-            supportedTypes="SHORT_TEXT RANGED_VALUE">
+        <!-- Step count - direct system data expression -->
+        <PartText x="260" y="124" width="120" height="28">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <DefaultProviderPolicy defaultSystemDataSource="STEP_COUNT"
-                defaultDataSourceType="SHORT_TEXT" />
-            <BoundingOval x="0" y="0" width="120" height="28" />
-            <Complication type="SHORT_TEXT">
-                <Text align="START">
-                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL"
-                          letterSpacing="0.06" color="[CONFIGURATION.accentColor.0]">
-                        <Template><![CDATA[STP:%s]]>
-                            <Parameter expression="[COMPLICATION.TEXT]" />
-                        </Template>
-                    </Font>
-                </Text>
-            </Complication>
-        </ComplicationSlot>
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL"
+                      letterSpacing="0.06" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[STP:%d]]>
+                        <Parameter expression="[STEP_COUNT]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
 
         <!-- ========================================================== -->
         <!-- MAIN TIME - 4 variants x 2 layers (ghost + active)         -->
@@ -265,22 +251,21 @@
         <!--  D: 12H no seconds  (timeFormat=12h, showSeconds=FALSE)   -->
         <!-- ========================================================== -->
 
-        <!-- A-GHOST: 24H with seconds -->
+        <!-- GHOST shadow layer: always on, single per mode - single condition each -->
+        <!-- 24H ghost (hidden in 12H mode) -->
         <PartText x="0" y="172" width="450" height="90" alpha="18">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[CONFIGURATION.showSeconds] == 0"><Variant target="alpha" value="0" /></Condition>
             <Text align="CENTER">
                 <Font family="@font/dseg7" size="68" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
                     <Template>88:88:88</Template>
                 </Font>
             </Text>
         </PartText>
-        <!-- A-ACTIVE: 24H with seconds -->
+        <!-- 24H active time (hidden in 12H mode) -->
         <PartText x="0" y="172" width="450" height="90">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[CONFIGURATION.showSeconds] == 0"><Variant target="alpha" value="0" /></Condition>
             <Text align="CENTER">
                 <Font family="@font/dseg7" size="68" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
                     <Template><![CDATA[%02d:%02d:%02d]]>
@@ -292,80 +277,26 @@
             </Text>
         </PartText>
 
-        <!-- B-GHOST: 24H no seconds -->
-        <PartText x="0" y="172" width="450" height="90" alpha="18">
-            <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[CONFIGURATION.showSeconds] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Text align="CENTER">
-                <Font family="@font/dseg7" size="82" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                    <Template>88:88</Template>
-                </Font>
-            </Text>
-        </PartText>
-        <!-- B-ACTIVE: 24H no seconds (larger font) -->
-        <PartText x="0" y="172" width="450" height="90">
-            <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[CONFIGURATION.showSeconds] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Text align="CENTER">
-                <Font family="@font/dseg7" size="82" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                    <Template><![CDATA[%02d:%02d]]>
-                        <Parameter expression="[HOUR_0_23_Z]" />
-                        <Parameter expression="[MINUTE_Z]" />
-                    </Template>
-                </Font>
-            </Text>
-        </PartText>
-
-        <!-- C-GHOST: 12H with seconds -->
+        <!-- 12H ghost (hidden in 24H mode) -->
         <PartText x="0" y="172" width="450" height="90" alpha="18">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[CONFIGURATION.showSeconds] == 0"><Variant target="alpha" value="0" /></Condition>
             <Text align="CENTER">
                 <Font family="@font/dseg7" size="68" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
                     <Template>88:88:88</Template>
                 </Font>
             </Text>
         </PartText>
-        <!-- C-ACTIVE: 12H with seconds -->
+        <!-- 12H active time (hidden in 24H mode) -->
         <PartText x="0" y="172" width="450" height="90">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[CONFIGURATION.showSeconds] == 0"><Variant target="alpha" value="0" /></Condition>
             <Text align="CENTER">
                 <Font family="@font/dseg7" size="68" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
                     <Template><![CDATA[%02d:%02d:%02d]]>
                         <Parameter expression="[HOUR_1_12_Z]" />
                         <Parameter expression="[MINUTE_Z]" />
                         <Parameter expression="[SECOND_Z]" />
-                    </Template>
-                </Font>
-            </Text>
-        </PartText>
-
-        <!-- D-GHOST: 12H no seconds -->
-        <PartText x="0" y="172" width="450" height="90" alpha="18">
-            <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[CONFIGURATION.showSeconds] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Text align="CENTER">
-                <Font family="@font/dseg7" size="82" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                    <Template>88:88</Template>
-                </Font>
-            </Text>
-        </PartText>
-        <!-- D-ACTIVE: 12H no seconds (larger font) -->
-        <PartText x="0" y="172" width="450" height="90">
-            <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[CONFIGURATION.showSeconds] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Text align="CENTER">
-                <Font family="@font/dseg7" size="82" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                    <Template><![CDATA[%02d:%02d]]>
-                        <Parameter expression="[HOUR_1_12_Z]" />
-                        <Parameter expression="[MINUTE_Z]" />
                     </Template>
                 </Font>
             </Text>
@@ -390,7 +321,7 @@
         <!-- SIDE INDICATORS: 24H / 12H / SIG / AM / PM                -->
         <!-- ========================================================== -->
 
-        <!-- 24H label (shown when timeFormat=24h) -->
+        <!-- 24H label (single condition - hidden in 12H mode) -->
         <PartText x="390" y="188" width="50" height="18">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
@@ -401,7 +332,7 @@
             </Text>
         </PartText>
 
-        <!-- 12H label (shown when timeFormat=12h) -->
+        <!-- 12H label (single condition - hidden in 24H mode) -->
         <PartText x="390" y="188" width="50" height="18">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
@@ -412,37 +343,15 @@
             </Text>
         </PartText>
 
-        <!-- SIG label (24H mode) -->
-        <PartText x="390" y="210" width="50" height="18">
-            <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Text align="CENTER">
-                <Font family="SYNC_TO_DEVICE" size="12" weight="BOLD" letterSpacing="0.10" color="[CONFIGURATION.accentColor.1]">
-                    <Template>SIG</Template>
-                </Font>
-            </Text>
-        </PartText>
-
-        <!-- AM label (12H mode, before noon) -->
+        <!-- AM label (12H mode, hour 0-11) - single condition per element -->
         <PartText x="390" y="210" width="50" height="18">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[HOUR_0_23] >= 12"><Variant target="alpha" value="0" /></Condition>
             <Text align="CENTER">
                 <Font family="SYNC_TO_DEVICE" size="12" weight="BOLD" letterSpacing="0.10" color="[CONFIGURATION.accentColor.1]">
-                    <Template>AM</Template>
-                </Font>
-            </Text>
-        </PartText>
-
-        <!-- PM label (12H mode, noon onwards) -->
-        <PartText x="390" y="210" width="50" height="18">
-            <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
-            <Condition expression="[HOUR_0_23] &lt; 12"><Variant target="alpha" value="0" /></Condition>
-            <Text align="CENTER">
-                <Font family="SYNC_TO_DEVICE" size="12" weight="BOLD" letterSpacing="0.10" color="[CONFIGURATION.accentColor.1]">
-                    <Template>PM</Template>
+                    <Template><![CDATA[%s]]>
+                        <Parameter expression="[HOUR_0_23] >= 12 ? 'PM' : 'AM'" />
+                    </Template>
                 </Font>
             </Text>
         </PartText>
@@ -577,13 +486,27 @@
             name="@string/complication_alt"
             supportedTypes="SHORT_TEXT RANGED_VALUE LONG_TEXT">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <DefaultProviderPolicy defaultSystemDataSource="STEP_COUNT"
+            <DefaultProviderPolicy defaultSystemDataSource="DAY_OF_MONTH"
                 defaultDataSourceType="SHORT_TEXT" />
             <BoundingOval x="0" y="0" width="114" height="40" />
             <Complication type="SHORT_TEXT">
                 <Text align="CENTER">
                     <Font family="SYNC_TO_DEVICE" size="20" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
                         <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="NOT_CONFIGURED">
+                <Text align="CENTER">
+                    <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                        <Template>--</Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="NO_DATA">
+                <Text align="CENTER">
+                    <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                        <Template>--</Template>
                     </Font>
                 </Text>
             </Complication>
@@ -618,6 +541,20 @@
                 <Text align="CENTER">
                     <Font family="SYNC_TO_DEVICE" size="20" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
                         <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="NOT_CONFIGURED">
+                <Text align="CENTER">
+                    <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                        <Template>--</Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="NO_DATA">
+                <Text align="CENTER">
+                    <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                        <Template>--</Template>
                     </Font>
                 </Text>
             </Complication>
