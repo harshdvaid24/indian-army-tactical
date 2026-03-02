@@ -397,71 +397,72 @@
                 </Font>
             </Text>
         </PartText>
-        <!-- Battery bar: 10-segment discrete indicator (guaranteed WFF v2 compat) -->
-        <!-- Track -->
-        <PartDraw x="68" y="339" width="84" height="4">
+        <!-- Battery bar: segments start hidden (alpha=0), shown via >= condition -->
+        <!-- >= is valid unescaped XML; < requires &lt; which WFF evaluator doesn't decode -->
+        <!-- Track (always visible) -->
+        <PartDraw x="62" y="337" width="96" height="6">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Rectangle x="0" y="0" width="84" height="4"><Fill color="#22FFFFFF" /></Rectangle>
+            <Rectangle x="0" y="0" width="96" height="6"><Fill color="#22FFFFFF" /></Rectangle>
         </PartDraw>
-        <!-- Segment 1 (>=10%) -->
-        <PartDraw x="68" y="339" width="8" height="4">
+        <!-- Segment 1: show when battery >= 10 -->
+        <PartDraw x="62" y="337" width="9" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 10"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 10"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
-        <!-- Segment 2 (>=20%) -->
-        <PartDraw x="77" y="339" width="8" height="4">
+        <!-- Segment 2: show when battery >= 20 -->
+        <PartDraw x="72" y="337" width="9" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 20"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 20"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
-        <!-- Segment 3 (>=30%) -->
-        <PartDraw x="86" y="339" width="8" height="4">
+        <!-- Segment 3: show when battery >= 30 -->
+        <PartDraw x="82" y="337" width="9" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 30"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 30"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
-        <!-- Segment 4 (>=40%) -->
-        <PartDraw x="95" y="339" width="8" height="4">
+        <!-- Segment 4: show when battery >= 40 -->
+        <PartDraw x="92" y="337" width="9" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 40"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 40"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
-        <!-- Segment 5 (>=50%) -->
-        <PartDraw x="104" y="339" width="8" height="4">
+        <!-- Segment 5: show when battery >= 50 -->
+        <PartDraw x="102" y="337" width="9" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 50"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 50"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
-        <!-- Segment 6 (>=60%) -->
-        <PartDraw x="113" y="339" width="8" height="4">
+        <!-- Segment 6: show when battery >= 60 -->
+        <PartDraw x="112" y="337" width="9" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 60"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 60"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
-        <!-- Segment 7 (>=70%) -->
-        <PartDraw x="122" y="339" width="8" height="4">
+        <!-- Segment 7: show when battery >= 70 -->
+        <PartDraw x="122" y="337" width="9" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 70"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 70"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
-        <!-- Segment 8 (>=80%) -->
-        <PartDraw x="131" y="339" width="8" height="4">
+        <!-- Segment 8: show when battery >= 80 -->
+        <PartDraw x="132" y="337" width="9" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 80"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 80"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
-        <!-- Segment 9 (>=90%) -->
-        <PartDraw x="140" y="339" width="8" height="4">
+        <!-- Segment 9: show when battery >= 90 -->
+        <PartDraw x="142" y="337" width="9" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 90"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 90"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
-        <!-- Segment 10 (>=100%) -->
-        <PartDraw x="149" y="339" width="8" height="4">
+        <!-- Segment 10: show only at 100 -->
+        <PartDraw x="152" y="337" width="6" height="6" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[BATTERY_PERCENT] &lt; 100"><Variant target="alpha" value="0" /></Condition>
-            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Condition expression="[BATTERY_PERCENT] >= 100"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="6" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
 
         <!-- ========================================================== -->
@@ -491,7 +492,21 @@
             <BoundingOval x="0" y="0" width="114" height="40" />
             <Complication type="SHORT_TEXT">
                 <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="20" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="RANGED_VALUE">
+                <Text align="CENTER">
+                    <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="LONG_TEXT">
+                <Text align="CENTER">
+                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.0]">
                         <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
                     </Font>
                 </Text>
@@ -499,14 +514,14 @@
             <Complication type="NOT_CONFIGURED">
                 <Text align="CENTER">
                     <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
-                        <Template>--</Template>
+                        <Template>- -</Template>
                     </Font>
                 </Text>
             </Complication>
             <Complication type="NO_DATA">
                 <Text align="CENTER">
                     <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
-                        <Template>--</Template>
+                        <Template>- -</Template>
                     </Font>
                 </Text>
             </Complication>
@@ -532,14 +547,28 @@
         </PartText>
         <ComplicationSlot slotId="103" x="292" y="305" width="96" height="40"
             name="@string/complication_comp"
-            supportedTypes="SHORT_TEXT RANGED_VALUE">
+            supportedTypes="SHORT_TEXT RANGED_VALUE LONG_TEXT">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <DefaultProviderPolicy defaultSystemDataSource="DAY_OF_WEEK"
                 defaultDataSourceType="SHORT_TEXT" />
             <BoundingOval x="0" y="0" width="96" height="40" />
             <Complication type="SHORT_TEXT">
                 <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="20" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="RANGED_VALUE">
+                <Text align="CENTER">
+                    <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="LONG_TEXT">
+                <Text align="CENTER">
+                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.0]">
                         <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
                     </Font>
                 </Text>
@@ -547,14 +576,14 @@
             <Complication type="NOT_CONFIGURED">
                 <Text align="CENTER">
                     <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
-                        <Template>--</Template>
+                        <Template>- -</Template>
                     </Font>
                 </Text>
             </Complication>
             <Complication type="NO_DATA">
                 <Text align="CENTER">
                     <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
-                        <Template>--</Template>
+                        <Template>- -</Template>
                     </Font>
                 </Text>
             </Complication>
