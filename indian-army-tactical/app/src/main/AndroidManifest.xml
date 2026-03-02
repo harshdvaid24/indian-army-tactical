@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <!-- Required for watch face runtime -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Health complications (heart rate, steps) -->
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
+    <!-- Note: hasCode must be false for Watch Face Format -->
+    <application
+        android:label="@string/watch_face_name"
+        android:icon="@drawable/preview"
+        android:hasCode="false"
+        android:allowBackup="false">
+
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
+
+        <!-- Watch Face Format v2 - required for Flavors support in WFP2 picker -->
+        <property
+            android:name="com.google.wear.watchface.format.version"
+            android:value="2" />
+
+        <!--
+            WFF Service declaration — THIS is what makes the watch face appear
+            in the on-device picker. The WFF runtime (com.google.wear.watchface.runtime)
+            owns the actual implementation; this stub references it so the picker
+            can discover and list our package.
+        -->
+        <service
+            android:name="com.google.wear.watchface.runtime.WatchFaceStubService"
+            android:directBootAware="true"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/watch_face_name"
+            android:permission="android.permission.BIND_WALLPAPER">
+
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category android:name="com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+
+            <!-- Points the picker to watch_face_info.xml (flavors, editable, preview) -->
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face_info" />
+
+            <!-- Picker thumbnail shown in the watch face carousel -->
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview" />
+
+        </service>
+
+    </application>
+
+</manifest>

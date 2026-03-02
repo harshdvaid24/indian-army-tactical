@@ -1,0 +1,24 @@
+# Android / Gradle
+.gradle/
+build/
+*.apk
+*.aab
+*.ap_
+
+# Signing keystores — NEVER commit to public repos
+*.jks
+*.keystore
+signing.properties
+
+# Sensitive credentials
+# gradle.properties contains KEYSTORE_PASSWORD etc — exclude if using public VCS
+# gradle.properties  ← uncomment this line if pushing to a public repository
+
+# IDE
+.idea/
+*.iml
+local.properties
+.DS_Store
+
+# Generated
+app/build/

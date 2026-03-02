@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Build outputs
+**/build/
+*.apk
+*.aab
+*.ap_
+
+# Signing secrets
+*.jks
+*.keystore
+**/gradle.properties
+
+# Gradle local config
+local.properties
+
+# IDE
+.idea/
+*.iml
