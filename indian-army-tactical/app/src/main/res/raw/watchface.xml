@@ -488,19 +488,71 @@
                 </Font>
             </Text>
         </PartText>
-        <!-- Battery bar track (dim background) -->
+        <!-- Battery bar: 10-segment discrete indicator (guaranteed WFF v2 compat) -->
+        <!-- Track -->
         <PartDraw x="68" y="339" width="84" height="4">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Rectangle x="0" y="0" width="84" height="4">
-                <Fill color="#22FFFFFF" />
-            </Rectangle>
+            <Rectangle x="0" y="0" width="84" height="4"><Fill color="#22FFFFFF" /></Rectangle>
         </PartDraw>
-        <!-- Battery bar fill - width driven by BATTERY_PERCENT expression -->
-        <PartDraw x="68" y="339" width="84" height="4">
+        <!-- Segment 1 (>=10%) -->
+        <PartDraw x="68" y="339" width="8" height="4">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Rectangle x="0" y="0" width="[BATTERY_PERCENT]*84/100" height="4">
-                <Fill color="[CONFIGURATION.accentColor.0]" />
-            </Rectangle>
+            <Condition expression="[BATTERY_PERCENT] &lt; 10"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 2 (>=20%) -->
+        <PartDraw x="77" y="339" width="8" height="4">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] &lt; 20"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 3 (>=30%) -->
+        <PartDraw x="86" y="339" width="8" height="4">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] &lt; 30"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 4 (>=40%) -->
+        <PartDraw x="95" y="339" width="8" height="4">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] &lt; 40"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 5 (>=50%) -->
+        <PartDraw x="104" y="339" width="8" height="4">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] &lt; 50"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 6 (>=60%) -->
+        <PartDraw x="113" y="339" width="8" height="4">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] &lt; 60"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 7 (>=70%) -->
+        <PartDraw x="122" y="339" width="8" height="4">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] &lt; 70"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 8 (>=80%) -->
+        <PartDraw x="131" y="339" width="8" height="4">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] &lt; 80"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 9 (>=90%) -->
+        <PartDraw x="140" y="339" width="8" height="4">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] &lt; 90"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 10 (>=100%) -->
+        <PartDraw x="149" y="339" width="8" height="4">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] &lt; 100"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="0" y="0" width="8" height="4"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
         </PartDraw>
 
         <!-- ========================================================== -->
