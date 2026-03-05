@@ -15,10 +15,10 @@
   LAYOUT (450px canvas)
   y=30-38  Indian tricolor accent lines
   y=44-80  INDIAN ARMY header
-  y=84-164 Sub-display  date + HR/STP complications
+  y=84-164 Sub-display  date + weather complication
   y=172-262 Main time  ghost layer + active layer
   y=271-275 Divider double line
-  y=283-352 Bottom panels  BATT / ALT / COMP
+  y=283-352 Bottom panels  BATT / HR / STEPS
   y=360-388 Footer  === TACTICAL ===
 ==============================================================
 -->
@@ -213,31 +213,58 @@
             </Text>
         </PartText>
 
-        <!-- Heart rate - direct system data expression (no complication binding needed) -->
-        <PartText x="72" y="124" width="180" height="28">
+        <!-- Weather complication slot (sub-display row 2) -->
+        <PartText x="72" y="118" width="60" height="24">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Text align="START">
-                <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL"
-                      letterSpacing="0.06" color="[CONFIGURATION.accentColor.0]">
-                    <Template><![CDATA[HR:%d BPM]]>
-                        <Parameter expression="[HEART_RATE]" />
-                    </Template>
+                <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
+                    <Template>WX</Template>
                 </Font>
             </Text>
         </PartText>
-
-        <!-- Step count - direct system data expression -->
-        <PartText x="260" y="124" width="120" height="28">
+        <ComplicationSlot slotId="100" x="100" y="116" width="268" height="32"
+            name="@string/complication_weather"
+            supportedTypes="SHORT_TEXT LONG_TEXT RANGED_VALUE">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Text align="START">
-                <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL"
-                      letterSpacing="0.06" color="[CONFIGURATION.accentColor.0]">
-                    <Template><![CDATA[STP:%d]]>
-                        <Parameter expression="[STEP_COUNT]" />
-                    </Template>
-                </Font>
-            </Text>
-        </PartText>
+            <DefaultProviderPolicy defaultSystemDataSource="SUNRISE_SUNSET"
+                defaultDataSourceType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="268" height="32" />
+            <Complication type="SHORT_TEXT">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="16" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="RANGED_VALUE">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="16" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="LONG_TEXT">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="NOT_CONFIGURED">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                        <Template>TAP TO SET</Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="NO_DATA">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                        <Template>NO DATA</Template>
+                    </Font>
+                </Text>
+            </Complication>
+        </ComplicationSlot>
 
         <!-- ========================================================== -->
         <!-- MAIN TIME - 4 variants x 2 layers (ghost + active)         -->
@@ -466,7 +493,7 @@
         </PartDraw>
 
         <!-- ========================================================== -->
-        <!-- BOTTOM PANEL 2: ALT complication (user configurable)       -->
+        <!-- BOTTOM PANEL 2: HR (Heart Rate) - direct system data       -->
         <!-- ========================================================== -->
         <PartDraw x="168" y="283" width="114" height="66">
             <Variant mode="AMBIENT" target="alpha" value="0" />
@@ -479,56 +506,23 @@
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Text align="CENTER">
                 <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
-                    <Template>ALT</Template>
+                    <Template>HR</Template>
                 </Font>
             </Text>
         </PartText>
-        <ComplicationSlot slotId="102" x="168" y="305" width="114" height="40"
-            name="@string/complication_alt"
-            supportedTypes="SHORT_TEXT RANGED_VALUE LONG_TEXT">
+        <PartText x="168" y="305" width="114" height="40">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <DefaultProviderPolicy defaultSystemDataSource="DAY_OF_MONTH"
-                defaultDataSourceType="SHORT_TEXT" />
-            <BoundingOval x="0" y="0" width="114" height="40" />
-            <Complication type="SHORT_TEXT">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
-                    </Font>
-                </Text>
-            </Complication>
-            <Complication type="RANGED_VALUE">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
-                    </Font>
-                </Text>
-            </Complication>
-            <Complication type="LONG_TEXT">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.0]">
-                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
-                    </Font>
-                </Text>
-            </Complication>
-            <Complication type="NOT_CONFIGURED">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
-                        <Template>- -</Template>
-                    </Font>
-                </Text>
-            </Complication>
-            <Complication type="NO_DATA">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
-                        <Template>- -</Template>
-                    </Font>
-                </Text>
-            </Complication>
-        </ComplicationSlot>
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="22" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%d BPM]]>
+                        <Parameter expression="[HEART_RATE]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
 
         <!-- ========================================================== -->
-        <!-- BOTTOM PANEL 3: COMP complication (user configurable)      -->
+        <!-- BOTTOM PANEL 3: STEPS (Step Count) - direct system data    -->
         <!-- ========================================================== -->
         <PartDraw x="292" y="283" width="96" height="66">
             <Variant mode="AMBIENT" target="alpha" value="0" />
@@ -541,53 +535,20 @@
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Text align="CENTER">
                 <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
-                    <Template>COMP</Template>
+                    <Template>STEPS</Template>
                 </Font>
             </Text>
         </PartText>
-        <ComplicationSlot slotId="103" x="292" y="305" width="96" height="40"
-            name="@string/complication_comp"
-            supportedTypes="SHORT_TEXT RANGED_VALUE LONG_TEXT">
+        <PartText x="292" y="305" width="96" height="40">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <DefaultProviderPolicy defaultSystemDataSource="DAY_OF_WEEK"
-                defaultDataSourceType="SHORT_TEXT" />
-            <BoundingOval x="0" y="0" width="96" height="40" />
-            <Complication type="SHORT_TEXT">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
-                    </Font>
-                </Text>
-            </Complication>
-            <Complication type="RANGED_VALUE">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
-                    </Font>
-                </Text>
-            </Complication>
-            <Complication type="LONG_TEXT">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.0]">
-                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
-                    </Font>
-                </Text>
-            </Complication>
-            <Complication type="NOT_CONFIGURED">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
-                        <Template>- -</Template>
-                    </Font>
-                </Text>
-            </Complication>
-            <Complication type="NO_DATA">
-                <Text align="CENTER">
-                    <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
-                        <Template>- -</Template>
-                    </Font>
-                </Text>
-            </Complication>
-        </ComplicationSlot>
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%d]]>
+                        <Parameter expression="[STEP_COUNT]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
 
         <!-- ========================================================== -->
         <!-- FOOTER  === TACTICAL === - active only                     -->

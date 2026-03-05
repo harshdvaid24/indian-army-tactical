@@ -34,8 +34,7 @@
     <string name="flavor_red">Red Alert</string>
 
     <!-- Complication slot names -->
+    <string name="complication_weather">Weather / Info</string>
     <string name="complication_hr">Heart Rate</string>
     <string name="complication_steps">Step Count</string>
-    <string name="complication_alt">Alt / Info</string>
-    <string name="complication_comp">Compass / Day</string>
 </resources>

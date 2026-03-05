@@ -10,8 +10,8 @@ android {
         applicationId = "com.watchforge.tacticalindia"
         minSdk = 30          // Wear OS 3+ (broader device reach for Play Store)
         targetSdk = 35
-        versionCode = 6
-        versionName = "1.0.0"
+        versionCode = 7
+        versionName = "1.1.0"
     }
 
     // ── Release signing ──────────────────────────────────────────────────────
