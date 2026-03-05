@@ -187,7 +187,7 @@
         </PartText>
 
         <!-- ========================================================== -->
-        <!-- SUB-DISPLAY: date + HR + steps - active only               -->
+        <!-- SUB-DISPLAY: date + DOY + weather - active only           -->
         <!-- ========================================================== -->
         <PartDraw x="60" y="84" width="330" height="80">
             <Variant mode="AMBIENT" target="alpha" value="0" />
@@ -197,12 +197,20 @@
             </RoundRectangle>
         </PartDraw>
 
-        <!-- Date line: TUE  03-MAR-2026 -->
-        <PartText x="72" y="92" width="306" height="28">
+        <!-- Row 1: DATE label + full date -->
+        <PartText x="72" y="88" width="40" height="18">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Text align="START">
-                <Font family="SYNC_TO_DEVICE" size="16" weight="BOLD"
-                      letterSpacing="0.10" color="[CONFIGURATION.accentColor.1]">
+                <Font family="SYNC_TO_DEVICE" size="10" weight="BOLD" letterSpacing="0.16" color="[CONFIGURATION.accentColor.2]">
+                    <Template>DATE</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <PartText x="110" y="86" width="268" height="24">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="17" weight="BOLD"
+                      letterSpacing="0.08" color="[CONFIGURATION.accentColor.1]">
                     <Template><![CDATA[%s  %s-%s-%d]]>
                         <Parameter expression="[DAY_OF_WEEK_S]" />
                         <Parameter expression="[DAY_Z]" />
@@ -213,22 +221,58 @@
             </Text>
         </PartText>
 
-        <!-- Weather complication slot (sub-display row 2) -->
-        <PartText x="72" y="118" width="60" height="24">
+        <!-- Accent divider line inside sub-display -->
+        <PartDraw x="60" y="84" width="330" height="80">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Line startX="12" startY="34" endX="318" endY="34">
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
+            </Line>
+        </PartDraw>
+
+        <!-- Row 2: DOY counter + Weather complication -->
+        <PartText x="72" y="120" width="40" height="18">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Text align="START">
-                <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
+                <Font family="SYNC_TO_DEVICE" size="10" weight="BOLD" letterSpacing="0.16" color="[CONFIGURATION.accentColor.2]">
+                    <Template>DOY</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <PartText x="108" y="120" width="44" height="22">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="16" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%03d]]>
+                        <Parameter expression="[DAY_OF_YEAR]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+        <!-- Vertical separator dot -->
+        <PartText x="156" y="120" width="12" height="22">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="14" weight="BOLD" color="[CONFIGURATION.accentColor.2]">
+                    <Template>|</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <!-- WX label -->
+        <PartText x="172" y="120" width="24" height="18">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="10" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
                     <Template>WX</Template>
                 </Font>
             </Text>
         </PartText>
-        <ComplicationSlot slotId="100" x="100" y="116" width="268" height="32"
+        <ComplicationSlot slotId="100" x="194" y="116" width="184" height="32"
             name="@string/complication_weather"
             supportedTypes="SHORT_TEXT LONG_TEXT RANGED_VALUE">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <DefaultProviderPolicy defaultSystemDataSource="SUNRISE_SUNSET"
                 defaultDataSourceType="SHORT_TEXT" />
-            <BoundingOval x="0" y="0" width="268" height="32" />
+            <BoundingOval x="0" y="0" width="184" height="32" />
             <Complication type="SHORT_TEXT">
                 <Text align="START">
                     <Font family="SYNC_TO_DEVICE" size="16" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
@@ -252,14 +296,14 @@
             </Complication>
             <Complication type="NOT_CONFIGURED">
                 <Text align="START">
-                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                    <Font family="SYNC_TO_DEVICE" size="13" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
                         <Template>TAP TO SET</Template>
                     </Font>
                 </Text>
             </Complication>
             <Complication type="NO_DATA">
                 <Text align="START">
-                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                    <Font family="SYNC_TO_DEVICE" size="13" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
                         <Template>NO DATA</Template>
                     </Font>
                 </Text>
@@ -370,15 +414,43 @@
             </Text>
         </PartText>
 
-        <!-- AM label (12H mode, hour 0-11) - single condition per element -->
-        <PartText x="390" y="210" width="50" height="18">
+        <!-- AM/PM badge - 12H mode only (hidden in 24H) -->
+        <!-- Background pill -->
+        <PartDraw x="10" y="218" width="44" height="22">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
+            <RoundRectangle x="0" y="0" width="44" height="22" cornerRadiusX="4" cornerRadiusY="4">
+                <Fill color="[CONFIGURATION.bgTheme.1]" />
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
+            </RoundRectangle>
+        </PartDraw>
+        <PartText x="10" y="218" width="44" height="22">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
             <Text align="CENTER">
-                <Font family="SYNC_TO_DEVICE" size="12" weight="BOLD" letterSpacing="0.10" color="[CONFIGURATION.accentColor.1]">
+                <Font family="SYNC_TO_DEVICE" size="14" weight="BOLD" letterSpacing="0.08" color="[CONFIGURATION.accentColor.0]">
                     <Template><![CDATA[%s]]>
                         <Parameter expression="[HOUR_0_23] >= 12 ? 'PM' : 'AM'" />
                     </Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- SIG indicator (always on in 24H, hidden in 12H) -->
+        <PartDraw x="10" y="218" width="44" height="22">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
+            <RoundRectangle x="0" y="0" width="44" height="22" cornerRadiusX="4" cornerRadiusY="4">
+                <Fill color="[CONFIGURATION.bgTheme.1]" />
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
+            </RoundRectangle>
+        </PartDraw>
+        <PartText x="10" y="218" width="44" height="22">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
+                    <Template>SIG</Template>
                 </Font>
             </Text>
         </PartText>
