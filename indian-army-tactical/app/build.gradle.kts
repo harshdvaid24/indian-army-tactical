@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    namespace = "com.watchforge.tacticalindia"
+    namespace = "com.army.tectical"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.watchforge.tacticalindia"
-        minSdk = 30          // Wear OS 3+ (broader device reach for Play Store)
+        applicationId = "com.army.tectical"
+        minSdk = 34          // Wear OS 4+ (Required for WFF letterSpacing)
         targetSdk = 35
-        versionCode = 7
-        versionName = "1.1.0"
+        versionCode = 9
+        versionName = "1.2.1"
     }
 
     // ── Release signing ──────────────────────────────────────────────────────
@@ -67,7 +67,35 @@ android {
         density  { enableSplit = false }
         abi      { enableSplit = false }
     }
+
+    // ── Exclude all dex from the bundle ──────────────────────────────────────
+    // WFF v2 bundles MUST be strictly resource-only (no dex files).
+    // AGP generates an empty classes.dex by default even when hasCode=false;
+    // we exclude it at the packaging layer so Play Store validation passes.
+    packaging {
+        resources {
+            excludes += "**/*.dex"
+        }
+    }
 }
 
 // No code dependencies — Watch Face Format is 100% resource-based
 
+// ── Strip dex files from release bundle before Play Store submission ──────────
+// Even with android:hasCode="false", AGP produces an empty classes.dex.
+// Since standard AGP excludes don't work reliably for AABs, we forcefully 
+// strip the dex directory from the final AAB using the system zip utility.
+afterEvaluate {
+    tasks.named("bundleRelease").configure {
+        doLast {
+            val aabFile = layout.buildDirectory.file("outputs/bundle/release/app-release.aab").get().asFile
+            if (aabFile.exists()) {
+                println("WFF: Forcibly stripping base/dex/ from ${aabFile.name}")
+                exec {
+                    commandLine("zip", "-d", aabFile.absolutePath, "base/dex/*")
+                    isIgnoreExitValue = true // Ignore error if already deleted
+                }
+            }
+        }
+    }
+}

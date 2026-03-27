@@ -63,15 +63,8 @@
                 colors="#ff111418 #ff1A1E22 #ff3A3E42" />
         </ColorConfiguration>
 
-        <!--  Time Format  (index 0=24h  index 1=12h)  -->
-        <ListConfiguration
-            id="timeFormat"
-            defaultValue="24h"
-            displayName="@string/time_format_label"
-            screenReaderText="@string/time_format_label">
-            <ListOption id="24h" displayName="@string/time_24h" />
-            <ListOption id="12h" displayName="@string/time_12h" />
-        </ListConfiguration>
+        <!--  Time Format: removed custom toggle - now follows device
+             system setting via SYNC_TO_DEVICE / IS_24_HOUR_MODE  -->
 
         <!--  Show/Hide Seconds  -->
         <BooleanConfiguration
@@ -311,91 +304,72 @@
         </ComplicationSlot>
 
         <!-- ========================================================== -->
-        <!-- MAIN TIME - 4 variants x 2 layers (ghost + active)         -->
+        <!-- MAIN TIME - DigitalClock with TimeText (proper WFF)        -->
         <!--                                                            -->
-        <!--  Ghost layer alpha=18 (~7%) = authentic LCD shadow segs    -->
-        <!--  Multiple Condition blocks AND together to hide/show vars  -->
-        <!--                                                            -->
-        <!--  A: 24H + seconds   (timeFormat=24h, showSeconds=TRUE)    -->
-        <!--  B: 24H no seconds  (timeFormat=24h, showSeconds=FALSE)   -->
-        <!--  C: 12H + seconds   (timeFormat=12h, showSeconds=TRUE)    -->
-        <!--  D: 12H no seconds  (timeFormat=12h, showSeconds=FALSE)   -->
+        <!--  Ghost layer: decorative PartText "88:88:88" at alpha=18   -->
+        <!--  Active: TimeText with DSEG7 font, SYNC_TO_DEVICE format  -->
+        <!--  Ambient: TimeText HH:MM only, monochrome                  -->
         <!-- ========================================================== -->
 
-        <!-- GHOST shadow layer: always on, single per mode - single condition each -->
-        <!-- 24H ghost (hidden in 12H mode) -->
+        <!-- GHOST shadow layer: decorative LCD segment shadow (active only) -->
         <PartText x="0" y="172" width="450" height="90" alpha="18">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
             <Text align="CENTER">
                 <Font family="@font/dseg7" size="68" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
                     <Template>88:88:88</Template>
                 </Font>
             </Text>
         </PartText>
-        <!-- 24H active time (hidden in 12H mode) -->
-        <PartText x="0" y="172" width="450" height="90">
-            <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
-            <Text align="CENTER">
-                <Font family="@font/dseg7" size="68" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                    <Template><![CDATA[%02d:%02d:%02d]]>
-                        <Parameter expression="[HOUR_0_23_Z]" />
-                        <Parameter expression="[MINUTE_Z]" />
-                        <Parameter expression="[SECOND_Z]" />
-                    </Template>
-                </Font>
-            </Text>
-        </PartText>
 
-        <!-- 12H ghost (hidden in 24H mode) -->
-        <PartText x="0" y="172" width="450" height="90" alpha="18">
-            <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
-            <Text align="CENTER">
-                <Font family="@font/dseg7" size="68" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                    <Template>88:88:88</Template>
-                </Font>
-            </Text>
-        </PartText>
-        <!-- 12H active time (hidden in 24H mode) -->
-        <PartText x="0" y="172" width="450" height="90">
-            <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
-            <Text align="CENTER">
-                <Font family="@font/dseg7" size="68" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
-                    <Template><![CDATA[%02d:%02d:%02d]]>
-                        <Parameter expression="[HOUR_1_12_Z]" />
-                        <Parameter expression="[MINUTE_Z]" />
-                        <Parameter expression="[SECOND_Z]" />
-                    </Template>
-                </Font>
-            </Text>
-        </PartText>
+        <!-- DigitalClock: system-managed time display -->
+        <DigitalClock x="0" y="172" width="450" height="90">
 
-        <!-- ========================================================== -->
-        <!-- AMBIENT TIME  HH:MM only monochrome, no ghost              -->
-        <!-- ========================================================== -->
-        <PartText x="0" y="172" width="450" height="90" alpha="0">
-            <Variant mode="AMBIENT" target="alpha" value="255" />
-            <Text align="CENTER">
-                <Font family="@font/dseg7" size="82" weight="BOLD" color="#ff888888">
-                    <Template><![CDATA[%02d:%02d]]>
-                        <Parameter expression="[HOUR_0_23_Z]" />
-                        <Parameter expression="[MINUTE_Z]" />
-                    </Template>
-                </Font>
-            </Text>
-        </PartText>
+            <!-- Active mode WITH seconds (showSeconds=TRUE) -->
+            <TimeText format="hh:mm:ss" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="450" height="90"
+                alpha="255">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Condition expression="[CONFIGURATION.showSeconds] == false">
+                    <Variant target="alpha" value="0" />
+                </Condition>
+                <Font family="@font/dseg7" size="68" weight="BOLD"
+                      color="[CONFIGURATION.accentColor.0]" />
+            </TimeText>
+
+            <!-- Active mode WITHOUT seconds (showSeconds=FALSE) -->
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="450" height="90"
+                alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Condition expression="[CONFIGURATION.showSeconds] == false">
+                    <Variant target="alpha" value="255" />
+                </Condition>
+                <Font family="@font/dseg7" size="78" weight="BOLD"
+                      color="[CONFIGURATION.accentColor.0]" />
+            </TimeText>
+
+            <!-- Ambient mode: HH:MM only, monochrome, no ghost -->
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="450" height="90"
+                alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="255" />
+                <Font family="@font/dseg7" size="82" weight="BOLD"
+                      color="#ff888888" />
+            </TimeText>
+
+        </DigitalClock>
 
         <!-- ========================================================== -->
         <!-- SIDE INDICATORS: 24H / 12H / SIG / AM / PM                -->
+        <!--  Uses [IS_24_HOUR_MODE] to follow device system setting    -->
         <!-- ========================================================== -->
 
-        <!-- 24H label (single condition - hidden in 12H mode) -->
-        <PartText x="390" y="188" width="50" height="18">
+        <!-- 24H label (shown when device is in 24H mode) -->
+        <PartText x="390" y="188" width="50" height="18" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="255" />
+            </Condition>
             <Text align="CENTER">
                 <Font family="SYNC_TO_DEVICE" size="12" weight="BOLD" letterSpacing="0.10" color="[CONFIGURATION.accentColor.2]">
                     <Template>24H</Template>
@@ -403,10 +377,12 @@
             </Text>
         </PartText>
 
-        <!-- 12H label (single condition - hidden in 24H mode) -->
-        <PartText x="390" y="188" width="50" height="18">
+        <!-- 12H label (shown when device is in 12H mode) -->
+        <PartText x="390" y="188" width="50" height="18" alpha="255">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="0" />
+            </Condition>
             <Text align="CENTER">
                 <Font family="SYNC_TO_DEVICE" size="12" weight="BOLD" letterSpacing="0.10" color="[CONFIGURATION.accentColor.2]">
                     <Template>12H</Template>
@@ -416,17 +392,21 @@
 
         <!-- AM/PM badge - 12H mode only (hidden in 24H) -->
         <!-- Background pill -->
-        <PartDraw x="10" y="218" width="44" height="22">
+        <PartDraw x="10" y="218" width="44" height="22" alpha="255">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="0" />
+            </Condition>
             <RoundRectangle x="0" y="0" width="44" height="22" cornerRadiusX="4" cornerRadiusY="4">
                 <Fill color="[CONFIGURATION.bgTheme.1]" />
                 <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
             </RoundRectangle>
         </PartDraw>
-        <PartText x="10" y="218" width="44" height="22">
+        <PartText x="10" y="218" width="44" height="22" alpha="255">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 0"><Variant target="alpha" value="0" /></Condition>
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="0" />
+            </Condition>
             <Text align="CENTER">
                 <Font family="SYNC_TO_DEVICE" size="14" weight="BOLD" letterSpacing="0.08" color="[CONFIGURATION.accentColor.0]">
                     <Template><![CDATA[%s]]>
@@ -436,18 +416,22 @@
             </Text>
         </PartText>
 
-        <!-- SIG indicator (always on in 24H, hidden in 12H) -->
-        <PartDraw x="10" y="218" width="44" height="22">
+        <!-- SIG indicator (shown in 24H mode, hidden in 12H) -->
+        <PartDraw x="10" y="218" width="44" height="22" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="255" />
+            </Condition>
             <RoundRectangle x="0" y="0" width="44" height="22" cornerRadiusX="4" cornerRadiusY="4">
                 <Fill color="[CONFIGURATION.bgTheme.1]" />
                 <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
             </RoundRectangle>
         </PartDraw>
-        <PartText x="10" y="218" width="44" height="22">
+        <PartText x="10" y="218" width="44" height="22" alpha="0">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <Condition expression="[CONFIGURATION.timeFormat] == 1"><Variant target="alpha" value="0" /></Condition>
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="255" />
+            </Condition>
             <Text align="CENTER">
                 <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
                     <Template>SIG</Template>
