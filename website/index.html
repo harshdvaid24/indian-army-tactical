@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Rugged 7-segment LCD tactical watch face for Wear OS, inspired by Indian Army field watches. Military time, battery, heart rate, steps — fully standalone." />
+  <title>Indian Army Tactical — Wear OS Watch Face</title>
+  <link rel="icon" type="image/png" href="assets/icon.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0A0A0A;
+      --panel:     #0D1A0D;
+      --amber:     #FF8C00;
+      --amber-dim: #CC6A00;
+      --green:     #4A5D23;
+      --text:      #E8E8E8;
+      --muted:     #888;
+      --saffron:   #FF9933;
+      --white:     #FFFFFF;
+      --india-grn: #138808;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Tricolor top bar ── */
+    .tricolor {
+      width: 100%;
+      display: flex;
+      height: 5px;
+    }
+    .tricolor span { flex: 1; }
+    .tricolor .saffron { background: var(--saffron); }
+    .tricolor .white   { background: var(--white); }
+    .tricolor .green   { background: var(--india-grn); }
+
+    /* ── Hero ── */
+    .hero {
+      width: 100%;
+      max-width: 900px;
+      padding: 48px 24px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .hero-banner {
+      width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--green);
+    }
+    .hero-banner img {
+      width: 100%;
+      display: block;
+    }
+
+    .hero-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      text-align: center;
+    }
+
+    .app-icon {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 2px solid var(--amber);
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      color: var(--amber);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      max-width: 540px;
+    }
+
+    /* ── Screenshot ── */
+    .screenshot-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+    }
+    .screenshot-wrap img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 3px solid var(--amber);
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── CTA button ── */
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--amber);
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      padding: 14px 28px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      transition: background 0.15s;
+    }
+    .cta:hover { background: var(--amber-dim); }
+    .cta svg { flex-shrink: 0; }
+
+    /* ── Divider ── */
+    .divider {
+      width: 100%;
+      max-width: 900px;
+      border: none;
+      border-top: 1px solid var(--green);
+      margin: 48px 24px 0;
+    }
+
+    /* ── Features ── */
+    .features {
+      width: 100%;
+      max-width: 900px;
+      padding: 40px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--panel);
+      border: 1px solid var(--green);
+      border-radius: 6px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feature-label {
+      font-size: 0.7rem;
+      color: var(--amber);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .feature-text {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* ── Themes strip ── */
+    .themes {
+      width: 100%;
+      max-width: 900px;
+      padding: 0 24px 40px;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      color: var(--amber);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .theme-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill {
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      padding: 6px 14px;
+      border-radius: 3px;
+      border: 1px solid;
+    }
+    .pill-amber  { color: #FF8C00; border-color: #FF8C00; }
+    .pill-green  { color: #4CAF50; border-color: #4CAF50; }
+    .pill-blue   { color: #42A5F5; border-color: #42A5F5; }
+    .pill-stealth{ color: #AAAAAA; border-color: #555555; }
+    .pill-red    { color: #FF4444; border-color: #FF4444; }
+
+    /* ── Footer ── */
+    footer {
+      width: 100%;
+      border-top: 1px solid var(--green);
+      padding: 24px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    footer a {
+      color: var(--amber);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+
+    .footer-tactical {
+      letter-spacing: 0.25em;
+      color: var(--green);
+      font-size: 0.7rem;
+    }
+
+    @media (max-width: 480px) {
+      .screenshot-wrap { width: 180px; height: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tricolor">
+    <span class="saffron"></span>
+    <span class="white"></span>
+    <span class="green"></span>
+  </div>
+
+  <section class="hero">
+    <div class="hero-banner">
+      <img src="assets/feature_graphic.png" alt="Indian Army Tactical watch face banner" />
+    </div>
+
+    <div class="hero-body">
+      <img src="assets/icon.png" alt="App icon" class="app-icon" />
+      <h1>Indian Army Tactical</h1>
+      <p class="tagline">Rugged 7-segment LCD tactical watch face for Wear OS — inspired by Indian Army field-issue timepieces.</p>
+
+      <div class="screenshot-wrap">
+        <img src="assets/screenshot.png" alt="Indian Army Tactical watch face on Wear OS" />
+      </div>
+
+      <a class="cta" href="#" id="play-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.18 23.76c.3.17.64.24.98.21l11.63-11.64L12.1 8.64 3.18 23.76zM20.7 10.5l-2.87-1.63-3.43 3.43 3.43 3.44 2.89-1.64c.82-.47.82-1.13-.02-1.6zM3.06.27C2.72.54 2.5.96 2.5 1.5v21c0 .54.22.96.56 1.23L14.8 12 3.06.27zM15.79 13.07l-3.69 3.69 8.52 4.83c.3.17.62.2.91.09L15.79 13.07z"/>
+        </svg>
+        Get it on Google Play
+      </a>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="features">
+    <div class="feature-card">
+      <span class="feature-label">Display</span>
+      <span class="feature-text">Authentic DSEG7 7-segment LCD font with ghost segment effect for a real LCD look</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-label">Complications</span>
+      <span class="feature-text">Battery bar, heart rate (BPM), daily step count, and a configurable weather/info slot</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-label">Military Time</span>
+      <span class="feature-text">Auto-follows device format — 24H or 12H with AM/PM indicator. Day-of-year (DOY) counter included</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-label">Indian Tricolor</span>
+      <span class="feature-text">Saffron, white, and green accent lines honoring the Indian national flag</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-label">Ambient Mode</span>
+      <span class="feature-text">Monochrome HH:MM display in ambient — OLED-safe, burn-in protected</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-label">Lightweight</span>
+      <span class="feature-text">Under 110 KB. No phone companion required. No permissions. No data collection.</span>
+    </div>
+  </section>
+
+  <section class="themes">
+    <p class="section-label">Preset Themes</p>
+    <div class="theme-pills">
+      <span class="pill pill-amber">Tactical Amber</span>
+      <span class="pill pill-green">Tactical Green</span>
+      <span class="pill pill-blue">Urban Blue</span>
+      <span class="pill pill-stealth">Stealth Black</span>
+      <span class="pill pill-red">Red Alert</span>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-tactical">=== TACTICAL ===</div>
+    <div>
+      <a href="privacy.html">Privacy Policy</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:vaidharsh24@gmail.com">Contact</a>
+    </div>
+    <div>© 2026 Indian Army Tactical. Designed with pride for the soldiers and veterans of the Indian Armed Forces.</div>
+  </footer>
+
+</body>
+</html>
