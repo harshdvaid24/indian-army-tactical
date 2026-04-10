@@ -64,33 +64,57 @@ def download_font(design_path):
             print(f"ERROR: Download failed: {result.stderr}")
             sys.exit(1)
 
-        # Extract TTF files
-        try:
-            with zipfile.ZipFile(zip_path) as zf:
-                ttf_files = [n for n in zf.namelist() if n.endswith(".ttf")]
-                if not ttf_files:
-                    print("ERROR: No TTF files found in downloaded ZIP")
-                    sys.exit(1)
+        # Check if the download is a valid ZIP or a single TTF
+        file_check = subprocess.run(["file", zip_path], capture_output=True, text=True)
+        if "TrueType" in file_check.stdout or "OpenType" in file_check.stdout or "font" in file_check.stdout.lower():
+            # Direct TTF file (e.g., from GitHub mirror)
+            shutil.copy2(zip_path, target)
+            print(f"  Direct TTF file saved")
+        elif "Zip" in file_check.stdout:
+            # ZIP archive from Google Fonts
+            try:
+                with zipfile.ZipFile(zip_path) as zf:
+                    ttf_files = [n for n in zf.namelist() if n.endswith(".ttf")]
+                    if not ttf_files:
+                        print("ERROR: No TTF files found in downloaded ZIP")
+                        sys.exit(1)
 
-                # Prefer Bold or Regular weight
-                chosen = None
-                for preference in ["Bold", "Regular", "Medium"]:
-                    for f_name in ttf_files:
-                        if preference in f_name:
-                            chosen = f_name
+                    chosen = None
+                    for preference in ["Bold", "Regular", "Medium"]:
+                        for f_name in ttf_files:
+                            if preference in f_name:
+                                chosen = f_name
+                                break
+                        if chosen:
                             break
-                    if chosen:
-                        break
-                if not chosen:
-                    chosen = ttf_files[0]
+                    if not chosen:
+                        chosen = ttf_files[0]
 
-                print(f"  Extracting: {chosen}")
-                with zf.open(chosen) as src, open(target, "wb") as dst:
-                    dst.write(src.read())
-
-        except zipfile.BadZipFile:
-            print("ERROR: Downloaded file is not a valid ZIP")
-            sys.exit(1)
+                    print(f"  Extracting: {chosen}")
+                    with zf.open(chosen) as src, open(target, "wb") as dst:
+                        dst.write(src.read())
+            except zipfile.BadZipFile:
+                print("ERROR: Downloaded file is not a valid ZIP or font")
+                sys.exit(1)
+        else:
+            # Google Fonts blocks CLI; try GitHub mirror
+            family_lower = font["family"].lower().replace(" ", "").replace("_", "")
+            family_path = font["family"].lower().replace("_", "")
+            github_url = f"https://github.com/google/fonts/raw/main/ofl/{family_path}/{font['family'].replace(' ', '')}%5Bwght%5D.ttf"
+            print(f"  Primary download blocked, trying GitHub mirror: {github_url}")
+            result = subprocess.run(
+                ["curl", "-L", "-o", target, github_url],
+                capture_output=True, text=True
+            )
+            if result.returncode != 0:
+                print(f"ERROR: GitHub mirror download failed")
+                sys.exit(1)
+            # Verify it's a real font
+            verify = subprocess.run(["file", target], capture_output=True, text=True)
+            if "TrueType" not in verify.stdout and "OpenType" not in verify.stdout:
+                print(f"ERROR: Downloaded file is not a font: {verify.stdout.strip()}")
+                os.remove(target)
+                sys.exit(1)
 
     # Validate
     result = subprocess.run(["file", target], capture_output=True, text=True)

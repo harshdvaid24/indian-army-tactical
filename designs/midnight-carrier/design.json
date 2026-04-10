@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "slug": "midnight-carrier",
+    "displayName": "Midnight Carrier",
+    "description": "Inspired by aircraft carriers under the night sky. Dark matte background with runway-style markers and glowing indicators — precision operations in low light. Dedicated to the Indian Navy.",
+    "applicationId": "com.watchforge.midnightcarrier",
+    "versionCode": 1,
+    "versionName": "1.0.0",
+    "rootProjectName": "MidnightCarrier"
+  },
+  "font": {
+    "family": "orbitron",
+    "file": "orbitron.ttf",
+    "source": "google-fonts"
+  },
+  "accentColors": [
+    { "id": "carrier_cyan",  "displayName": "Carrier Cyan",    "stringKey": "color_cyan",    "colors": ["#ff00E5FF", "#ff00B8CC", "#ff0A3A4A"] },
+    { "id": "runway_amber",  "displayName": "Runway Amber",    "stringKey": "color_amber",   "colors": ["#ffFFAA00", "#ffCC8800", "#ff4A3A0A"] },
+    { "id": "radar_green",   "displayName": "Radar Green",     "stringKey": "color_green",   "colors": ["#ff00FF7F", "#ff00CC66", "#ff0A4A2A"] },
+    { "id": "alert_red",     "displayName": "Alert Red",       "stringKey": "color_red",     "colors": ["#ffFF2222", "#ffCC1A1A", "#ff4A0A0A"] },
+    { "id": "nav_white",     "displayName": "Navigation White", "stringKey": "color_white",  "colors": ["#ffCCDDEE", "#ff8899AA", "#ff2A3540"] }
+  ],
+  "defaultAccentColor": "carrier_cyan",
+  "bgThemes": [
+    { "id": "carrier",  "displayName": "Carrier Deck",    "stringKey": "bg_carrier",  "colors": ["#ff050810", "#ff0A1020", "#ff1A2540"] },
+    { "id": "blackout", "displayName": "Blackout",         "stringKey": "bg_blackout", "colors": ["#ff030305", "#ff060610", "#ff151525"] },
+    { "id": "nightops", "displayName": "Night Operations", "stringKey": "bg_nightops", "colors": ["#ff080A12", "#ff0E1220", "#ff1E2545"] }
+  ],
+  "defaultBgTheme": "carrier",
+  "flavors": [
+    { "id": "carrier_cyan",   "displayName": "Carrier Cyan",    "stringKey": "flavor_cyan",    "accentColor": "carrier_cyan", "bgTheme": "carrier" },
+    { "id": "runway_amber",   "displayName": "Runway Lights",   "stringKey": "flavor_amber",   "accentColor": "runway_amber", "bgTheme": "nightops" },
+    { "id": "radar_green",    "displayName": "Radar Sweep",     "stringKey": "flavor_green",   "accentColor": "radar_green",  "bgTheme": "carrier" },
+    { "id": "blackout_white", "displayName": "Silent Running",  "stringKey": "flavor_white",   "accentColor": "nav_white",    "bgTheme": "blackout" },
+    { "id": "alert_red",      "displayName": "Battle Stations",  "stringKey": "flavor_red",    "accentColor": "alert_red",    "bgTheme": "carrier" }
+  ],
+  "defaultFlavor": "carrier_cyan",
+  "headerText": "MIDNIGHT CARRIER",
+  "headerColor": "#ff8899AA",
+  "footerText": "=== INS VIKRANT ===",
+  "ambientSubtitle": "MIDNIGHT CARRIER",
+  "showTricolorAccent": false,
+  "tricolorColors": [],
+  "complicationLabels": {
+    "weather": "Weather / Info",
+    "hr": "Heart Rate",
+    "steps": "Step Count"
+  },
+  "playStore": {
+    "shortDescription": "Aircraft carrier night ops watch face — glowing indicators, dark matte.",
+    "price": "INR 100 / $2",
+    "category": "Watch Face",
+    "contentRating": "Everyone"
+  }
+}

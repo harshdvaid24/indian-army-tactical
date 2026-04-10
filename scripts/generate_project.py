@@ -220,15 +220,31 @@ def generate(design_path):
     else:
         print(f"  WARNING: Font not found at {font_src}")
 
-    # Copy preview if exists
-    preview_src = os.path.join(design_dir, "assets", "preview.png")
+    # Copy preview (required for build — manifest references @drawable/preview)
     preview_dst = os.path.join(out_dir, "app", "src", "main", "res", "drawable-nodpi", "preview.png")
+    os.makedirs(os.path.dirname(preview_dst), exist_ok=True)
+    preview_src = os.path.join(design_dir, "assets", "preview.png")
     if os.path.exists(preview_src):
-        os.makedirs(os.path.dirname(preview_dst), exist_ok=True)
         shutil.copy2(preview_src, preview_dst)
         print(f"  [asset] preview.png")
     else:
-        print(f"  WARNING: No preview.png found at {preview_src}")
+        # Generate a 1x1 placeholder PNG (will be replaced after emulator capture)
+        # Minimal valid PNG: 1x1 black pixel
+        import struct, zlib
+        def make_placeholder_png():
+            sig = b'\x89PNG\r\n\x1a\n'
+            ihdr_data = struct.pack('>IIBBBBB', 1, 1, 8, 2, 0, 0, 0)
+            ihdr_crc = struct.pack('>I', zlib.crc32(b'IHDR' + ihdr_data) & 0xffffffff)
+            ihdr = struct.pack('>I', 13) + b'IHDR' + ihdr_data + ihdr_crc
+            raw = zlib.compress(b'\x00\x00\x00\x00')
+            idat_crc = struct.pack('>I', zlib.crc32(b'IDAT' + raw) & 0xffffffff)
+            idat = struct.pack('>I', len(raw)) + b'IDAT' + raw + idat_crc
+            iend_crc = struct.pack('>I', zlib.crc32(b'IEND') & 0xffffffff)
+            iend = struct.pack('>I', 0) + b'IEND' + iend_crc
+            return sig + ihdr + idat + iend
+        with open(preview_dst, 'wb') as f:
+            f.write(make_placeholder_png())
+        print(f"  [asset] preview.png (placeholder — capture from emulator later)")
 
     # Ensure gradlew is executable
     gradlew = os.path.join(out_dir, "gradlew")
