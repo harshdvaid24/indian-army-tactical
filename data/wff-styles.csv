@@ -1,0 +1,13 @@
+id,name,keywords,header_format,footer_format,show_tricolor,suggested_font_category,mood
+1,Military Tactical,military army tactical rugged field combat,UPPER,=== LABEL ===,theme-specific,digital,Rugged and authoritative
+2,Cyberpunk Neon,cyberpunk neon futuristic dystopian glitch hacker,UPPER,// LABEL //,false,display,Dark and electric
+3,Minimalist Clean,minimal clean modern simple white elegant,TITLE,LABEL,false,sans-serif,Clean and understated
+4,Retro Digital,retro LCD vintage 80s digital nostalgia,UPPER,- LABEL -,false,digital,Nostalgic and warm
+5,Luxury Premium,luxury premium elegant gold platinum watch dress,TITLE,LABEL,false,display,Refined and sophisticated
+6,Sport Active,sport fitness active runner workout gym,UPPER,LABEL,false,sans-serif,Energetic and bold
+7,Ocean Marine,ocean sea marine nautical dive sailor,UPPER,~ LABEL ~,false,sans-serif,Deep and calming
+8,Racing Speed,racing automotive formula speed motorsport,UPPER,> LABEL <,false,display,Fast and aggressive
+9,Stealth Ops,stealth dark covert night operations shadow,UPPER,... LABEL ...,false,sans-serif,Subtle and covert
+10,Indian Patriotic,indian patriotic tricolor india nation army,UPPER,=== LABEL ===,true,sans-serif,Proud and national
+11,Sunset Warm,sunset warm orange twilight golden hour desert,TITLE,LABEL,false,sans-serif,Warm and atmospheric
+12,Arctic Ice,arctic ice frost winter cold snow polar,UPPER,LABEL,false,sans-serif,Cool and crisp

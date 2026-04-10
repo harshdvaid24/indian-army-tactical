@@ -4,24 +4,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this project is
 
-A **Watch Face Format v2 (WFF v2)** Wear OS watch face — entirely resource-based XML with no Kotlin or Java code (`android:hasCode="false"`). The design lives entirely in one file: `indian-army-tactical/app/src/main/res/raw/watchface.xml`.
+A **Watch Face Factory** — a monorepo for mass-producing Wear OS watch faces using Watch Face Format v2 (WFF v2). Each watch face is 100% resource-based XML (`hasCode=false`), generated from a `design.json` spec via a template system. The original "Indian Army Tactical" watch face lives at `indian-army-tactical/`; new designs go in `designs/<slug>/`.
 
-## Build commands
+## Watch Face Factory — Creating New Designs
 
-All commands run from inside the Gradle project root:
+### Quick workflow
+```bash
+# 1. Create a design spec (or use the /new-watchface skill)
+#    Edit designs/<slug>/design.json with colors, fonts, theme
+
+# 2. Generate the project from template
+python3 scripts/generate_project.py designs/<slug>/design.json
+
+# 3. Build locally (or push to trigger GitHub Actions)
+cd output/<slug>
+./gradlew clean :app:assembleRelease :app:bundleRelease
+```
+
+### CI/CD — build from anywhere (including Claude mobile app)
+Push a `designs/<slug>/design.json` to GitHub → the `build-watchface` workflow auto-triggers → builds AAB+APK → uploads as artifacts. Manual trigger via `workflow_dispatch` also supports publishing to Play Store tracks.
+
+### Skills
+- `/new-watchface` — full pipeline: theme → design → generate → build → publish guidance
+- `wff-design` — generates design.json from a theme description using WFF design databases
+- `wff-generate` — runs template engine, downloads fonts, validates output
+
+## Build commands (original project)
 
 ```bash
 cd indian-army-tactical
-
-# Clean + build APK (sideload) and AAB (Play Store)
 ./gradlew clean :app:assembleRelease :app:bundleRelease
-
-# Outputs:
-#   APK → app/build/outputs/apk/release/app-release.apk
-#   AAB → app/build/outputs/bundle/release/app-release.aab
 ```
 
-Always run `./gradlew clean` after changing `build.gradle.kts` or `AndroidManifest.xml` — Gradle caches aggressively and the APK may silently retain old values.
+Always run `./gradlew clean` after changing `build.gradle.kts` or `AndroidManifest.xml` — Gradle caches aggressively.
 
 ## Deploy to emulator
 
@@ -39,23 +54,29 @@ adb -s emulator-5556 logcat -d | grep "Finished adding flavors"
 ## Architecture
 
 ```
-indian-army-tactical/          ← Gradle project root
-├── app/
-│   ├── build.gradle.kts       ← compileSdk=35, minSdk=34, AAB dex-stripping hook
-│   └── src/main/
-│       ├── AndroidManifest.xml         ← hasCode=false, WFF v2 property
-│       └── res/
-│           ├── raw/watchface.xml       ← ENTIRE watch face design
-│           ├── xml/watch_face_info.xml ← FlavorsSupported, Editable, MultipleInstances
-│           ├── font/dseg7.ttf          ← DSEG7 Classic Bold (7-segment LCD font)
-│           ├── values/strings.xml      ← all config/flavor labels
-│           └── drawable-nodpi/preview.png ← 450×450 picker preview
-└── tacticalindia-release.jks  ← release signing keystore (credentials in gradle.properties)
-
-tasks/
-├── prompt.md    ← design prompt template + full WFF patterns reference
-├── lessons.md   ← pitfalls and lessons learned
-└── todo.md      ← backlog and review log
+├── template/                              ← frozen scaffold with .tmpl files
+│   ├── app/build.gradle.kts.tmpl          ← applicationId, version placeholders
+│   ├── app/src/main/res/raw/watchface.xml.tmpl ← colors, fonts, header/footer
+│   ├── app/src/main/res/values/strings.xml.tmpl
+│   └── (static files: AndroidManifest.xml, gradle wrapper, etc.)
+├── designs/                               ← one directory per watch face
+│   └── <slug>/
+│       ├── design.json                    ← all design tokens (single source of truth)
+│       ├── font/<font>.ttf                ← actual font binary
+│       └── assets/                        ← preview.png, store screenshots
+├── scripts/
+│   ├── generate_project.py                ← design.json + template → output/
+│   ├── download_font.py                   ← Google Fonts TTF fetcher
+│   └── validate_aab.py                    ← verify no dex in AAB
+├── data/                                  ← WFF design databases (CSV)
+│   ├── wff-color-palettes.csv, wff-fonts.csv, wff-styles.csv
+├── output/                                ← GITIGNORED generated projects
+├── .claude/skills/                        ← factory skills
+│   ├── wff-orchestrator/, wff-design/, wff-generate/
+├── .github/workflows/build-watchface.yml  ← CI/CD
+├── indian-army-tactical/                  ← original project (kept as-is)
+├── website/                               ← landing page + privacy policy
+└── tasks/                                 ← prompt.md, lessons.md, todo.md
 ```
 
 ### watchface.xml layout (450×450 canvas)

@@ -17,6 +17,9 @@
 # Gradle local config
 local.properties
 
+# Generated output (rebuild from template + design.json)
+output/
+
 # IDE
 .idea/
 *.iml

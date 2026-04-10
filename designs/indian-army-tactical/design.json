@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "slug": "indian-army-tactical",
+    "displayName": "Indian Army Tactical",
+    "description": "Rugged 7-segment LCD tactical watch face inspired by Indian Army field watches. Features military time, battery status, and tactical complications.",
+    "applicationId": "com.army.tectical",
+    "versionCode": 10,
+    "versionName": "1.2.2",
+    "rootProjectName": "IndianArmyTactical"
+  },
+  "font": {
+    "family": "dseg7",
+    "file": "dseg7.ttf",
+    "source": "local"
+  },
+  "accentColors": [
+    { "id": "amber",   "displayName": "Amber",        "stringKey": "color_amber",   "colors": ["#ffFF8C00", "#ffCCAA00", "#ff4A5D23"] },
+    { "id": "green",   "displayName": "Green",         "stringKey": "color_green",   "colors": ["#ff4CAF50", "#ff81C784", "#ff2E7D32"] },
+    { "id": "blue",    "displayName": "Blue",          "stringKey": "color_blue",    "colors": ["#ff42A5F5", "#ff90CAF9", "#ff1565C0"] },
+    { "id": "red",     "displayName": "Red Alert",     "stringKey": "color_red",     "colors": ["#ffFF4444", "#ffCC3333", "#ff8B0000"] },
+    { "id": "stealth", "displayName": "Stealth Gray",  "stringKey": "color_stealth", "colors": ["#ffDDDDDD", "#ffAAAAAA", "#ff555555"] }
+  ],
+  "defaultAccentColor": "amber",
+  "bgThemes": [
+    { "id": "tactical", "displayName": "Tactical (Dark Green)", "stringKey": "bg_tactical", "colors": ["#ff0A0A0A", "#ff0D1A0D", "#ff3A4A2A"] },
+    { "id": "stealth",  "displayName": "Stealth (Black)",       "stringKey": "bg_stealth",  "colors": ["#ff050505", "#ff080808", "#ff222222"] },
+    { "id": "urban",    "displayName": "Urban (Dark Gray)",     "stringKey": "bg_urban",    "colors": ["#ff111418", "#ff1A1E22", "#ff3A3E42"] }
+  ],
+  "defaultBgTheme": "tactical",
+  "flavors": [
+    { "id": "tactical_amber",  "displayName": "Tactical Amber",  "stringKey": "flavor_amber",   "accentColor": "amber",   "bgTheme": "tactical" },
+    { "id": "tactical_green",  "displayName": "Tactical Green",  "stringKey": "flavor_green",   "accentColor": "green",   "bgTheme": "tactical" },
+    { "id": "stealth_black",   "displayName": "Stealth Black",   "stringKey": "flavor_stealth", "accentColor": "stealth", "bgTheme": "stealth" },
+    { "id": "urban_blue",      "displayName": "Urban Blue",      "stringKey": "flavor_blue",    "accentColor": "blue",    "bgTheme": "urban" },
+    { "id": "tactical_red",    "displayName": "Red Alert",       "stringKey": "flavor_red",     "accentColor": "red",     "bgTheme": "tactical" }
+  ],
+  "defaultFlavor": "tactical_amber",
+  "headerText": "INDIAN ARMY",
+  "headerColor": "#ffE8E8E8",
+  "footerText": "=== TACTICAL ===",
+  "ambientSubtitle": "INDIAN ARMY",
+  "showTricolorAccent": true,
+  "tricolorColors": ["#ffFF9933", "#ffE8E8E8", "#ff138808"],
+  "complicationLabels": {
+    "weather": "Weather / Info",
+    "hr": "Heart Rate",
+    "steps": "Step Count"
+  },
+  "playStore": {
+    "shortDescription": "Rugged 7-segment LCD tactical watch face with military-grade complications.",
+    "price": "free",
+    "category": "Watch Face",
+    "contentRating": "Everyone"
+  }
+}
