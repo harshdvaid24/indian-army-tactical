@@ -79,20 +79,24 @@ keystoreAlias: %%KEYSTORE_ALIAS%%
 ## Codebase Structure
 
 ```
-app/
-├── src/main/
-│   ├── AndroidManifest.xml          ← CRITICAL: must include WatchFaceStubService
-│   ├── res/
-│   │   ├── raw/watchface.xml        ← entire watch face design lives here
-│   │   ├── font/dseg7.ttf           ← DSEG7 Classic Bold v0.46 binary
-│   │   ├── values/strings.xml       ← all configuration labels
-│   │   └── drawable/preview.png     ← 450×450 picker preview
-│   └── (no Kotlin source needed)
-├── build.gradle.kts                 ← compileSdk=35, minSdk=30, isShrinkResources=false
-tasks/
-├── prompt.md                        ← this file
-├── todo.md
-└── lessons.md
+indian-army-tactical/
+├── app/
+│   ├── build.gradle.kts              ← compileSdk=35, minSdk=34, AAB dex stripping
+│   └── src/main/
+│       ├── AndroidManifest.xml       ← hasCode=false, WFF v2 property, standalone=true
+│       └── res/
+│           ├── raw/watchface.xml     ← entire watch face design (Scene + UserConfigurations)
+│           ├── xml/watch_face_info.xml ← FlavorsSupported, Editable, MultipleInstances
+│           ├── font/dseg7.ttf        ← DSEG7 Classic Bold (7-segment LCD font)
+│           ├── values/strings.xml    ← all configuration/flavor labels
+│           └── drawable-nodpi/preview.png ← 450×450 picker preview bitmap
+├── build.gradle.kts                  ← root project (plugins, repos)
+├── tacticalindia-release.jks         ← release signing keystore
+├── gradle.properties                 ← keystore credentials (gitignored)
+└── tasks/
+    ├── prompt.md                     ← this file
+    ├── lessons.md                    ← WFF pitfalls & patterns
+    └── todo.md                       ← development backlog
 ```
 
 ---
@@ -200,21 +204,182 @@ Multiple `<Condition>` blocks inside one PartText/PartDraw AND together:
 ## Build & Deploy Commands
 
 ```bash
-# Full clean build
-cd /path/to/project
+# ── Full clean build (APK + AAB) ──
+cd indian-army-tactical
 ./gradlew clean :app:assembleRelease :app:bundleRelease
 
-# Install on emulator
-APK=app/build/outputs/apk/release/app-release.apk
-adb -s emulator-5556 uninstall com.yourapp.id
-adb -s emulator-5556 install $APK
+# Outputs:
+#   APK → app/build/outputs/apk/release/app-release.apk
+#   AAB → app/build/outputs/bundle/release/app-release.aab  (Play Store)
+```
 
-# Install on physical device (find transport_id with: adb devices -l)
-adb -t 27 uninstall com.yourapp.id
-adb -t 27 install $APK
+### Install on Wear OS Emulator
 
-# Verify service registered (confirms picker will find it)
-adb shell dumpsys package com.yourapp.id | grep -A2 "WATCH_FACE"
+```bash
+# 1. Start the Wear OS emulator
+emulator -avd WearOS5_Watch &
+
+# 2. Wait for boot
+adb -s emulator-5556 wait-for-device
+adb -s emulator-5556 shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
+
+# 3. Uninstall old version (clears DWF runtime cache)
+adb -s emulator-5556 uninstall com.army.tectical 2>/dev/null
+
+# 4. Install release APK
+adb -s emulator-5556 install app/build/outputs/apk/release/app-release.apk
+
+# 5. Wait ~15s for flavor processing, then verify
+sleep 15
+adb -s emulator-5556 logcat -d | grep "Finished adding flavors"
+# Should show: Success count: 5, Failure count: 0
+
+# 6. Select from picker: long-press home → swipe right → "+ Add" → scroll to "Indian Army T..."
+```
+
+### Install on Physical Watch (Sideload)
+
+```bash
+# 1. Enable ADB on watch: Settings → Developer options → ADB debugging
+# 2. Connect via WiFi or USB
+adb connect <watch-ip>:5555     # WiFi
+# or plug USB-C cable directly
+
+# 3. Check device
+adb devices -l
+
+# 4. Install (use transport_id if multiple devices)
+adb -s <serial> uninstall com.army.tectical 2>/dev/null
+adb -s <serial> install app/build/outputs/apk/release/app-release.apk
+
+# 5. Select from watch face picker (same long-press → Add flow)
+```
+
+---
+
+## Release Signing Setup
+
+### 1. Generate a keystore (one-time)
+```bash
+keytool -genkeypair -v \
+  -keystore tacticalindia-release.jks \
+  -keyalg RSA -keysize 2048 -validity 10000 \
+  -alias tactical \
+  -dname "CN=Indian Army Tactical,O=YourCompany"
+```
+
+### 2. Configure credentials
+Add to `gradle.properties` (keep out of git):
+```properties
+KEYSTORE_PATH=../tacticalindia-release.jks
+KEYSTORE_PASSWORD=your_keystore_password
+KEY_ALIAS=tactical
+KEY_PASSWORD=your_key_password
+```
+
+Or set as environment variables:
+```bash
+export KEYSTORE_PATH=./tacticalindia-release.jks
+export KEYSTORE_PASSWORD=secret
+export KEY_ALIAS=tactical
+export KEY_PASSWORD=secret
+```
+
+### 3. Build signed AAB
+```bash
+./gradlew clean bundleRelease
+# AAB is automatically signed + dex-stripped
+```
+
+---
+
+## Play Store Deployment
+
+### Pre-submission Checklist
+
+- [ ] `hasCode="false"` in AndroidManifest.xml
+- [ ] `isShrinkResources = false` in build.gradle.kts
+- [ ] AAB has NO dex files (`unzip -l app-release.aab | grep dex` should be empty)
+- [ ] `compileSdk = 35`, `minSdk = 34`, `targetSdk = 35`
+- [ ] Preview image is 450x450 PNG in `res/drawable-nodpi/`
+- [ ] Release keystore is NOT the debug keystore
+- [ ] Package name matches your Play Console app (`com.army.tectical`)
+- [ ] `versionCode` is incremented from last published version
+- [ ] `android:standalone="true"` meta-data present
+
+### Upload to Play Console
+
+1. Go to [Google Play Console](https://play.google.com/console)
+2. Create app → select "Wear OS" as form factor
+3. Under **Release** → **Production** → **Create new release**
+4. Upload `app/build/outputs/bundle/release/app-release.aab`
+5. Set release name (e.g., "1.2.1") and notes
+
+### Required Play Store Assets
+
+| Asset | Size | Notes |
+|-------|------|-------|
+| App icon | 512x512 PNG | High-res for store listing |
+| Feature graphic | 1024x500 PNG | Banner for store page |
+| Screenshots | Min 2, 384x384+ | Wear OS round screenshots |
+| Short description | Max 80 chars | "Tactical military watch face" |
+| Full description | Max 4000 chars | Feature list, customizations |
+
+### Generate Screenshots from Emulator
+```bash
+# Take screenshot from running Wear OS emulator
+adb -s emulator-5556 exec-out screencap -p > screenshot_amber.png
+
+# Resize to 450x450 if needed
+sips -z 450 450 screenshot_amber.png --out screenshot_amber_450.png
+```
+
+### Content Rating
+- Declare "No" for all sensitive categories
+- Select "Everyone" rating
+
+### Pricing & Distribution
+- WFF watch faces are typically free or paid
+- Select "Wear OS" under available devices
+- No phone app companion needed (standalone=true)
+
+---
+
+## Design Swapping Workflow
+
+To create a new watch face design from this template:
+
+### 1. Copy the scaffold
+```bash
+cp -r indian-army-tactical new-watch-face
+cd new-watch-face
+```
+
+### 2. Update identifiers
+- `build.gradle.kts`: change `applicationId` and `namespace`
+- `strings.xml`: update `watch_face_name`, labels, flavor names
+- `AndroidManifest.xml`: update `android:label` if needed
+
+### 3. Edit the design
+All visual design is in `res/raw/watchface.xml`:
+- **Colors**: Edit `<ColorConfiguration>` options
+- **Layout**: Adjust x/y/width/height of each element
+- **Font**: Replace `res/font/dseg7.ttf` with your font, update `family="@font/yourfont"`
+- **Complications**: Add/remove `<ComplicationSlot>` elements
+- **Flavors**: Update `<Flavors>` section with new preset combos
+
+### 4. Update preview
+```bash
+# After installing on emulator, capture the rendered watch face:
+adb exec-out screencap -p > preview_raw.png
+sips -z 450 450 preview_raw.png --out app/src/main/res/drawable-nodpi/preview.png
+```
+
+### 5. Build and test
+```bash
+./gradlew clean assembleRelease
+adb uninstall com.your.new.watchface
+adb install app/build/outputs/apk/release/app-release.apk
 ```
 
 ---
@@ -231,11 +396,38 @@ adb shell dumpsys package com.yourapp.id | grep -A2 "WATCH_FACE"
 | `[DAY_OF_WEEK_S]` | MON, TUE, etc. |
 | `[MONTH_S]` | JAN, FEB, etc. |
 | `[YEAR]` | 4-digit year |
+| `[DAY_OF_YEAR]` | 1-366 day of year |
 | `[BATTERY_PERCENT]` | 0-100 |
-| `[CONFIGURATION.id]` | Integer index of a ListConfiguration option |
-| `[CONFIGURATION.id.N]` | Nth color from a ColorConfiguration option |
+| `[HEART_RATE]` | BPM from last reading |
+| `[STEP_COUNT]` | Daily step count |
+| `[IS_24_HOUR_MODE]` | Boolean: device time format |
+| `[CONFIGURATION.id]` | BooleanConfig value (TRUE/FALSE) |
+| `[CONFIGURATION.id.N]` | Nth color from ColorConfiguration |
 | `[COMPLICATION.TEXT]` | Text value from bound complication |
 
 ---
 
-*Generated from Indian Army Digital Tactical v1.0.0 — Watch Face Format v2 template*
+## Failed Approaches Log
+
+Approaches tried and abandoned during development:
+
+| # | Approach | Why It Failed |
+|---|----------|---------------|
+| 1 | `createUserStyleFlavors()` override in Kotlin | WFF is resource-only (hasCode=false) — can't add Kotlin overrides |
+| 2 | `XmlSchemaAndComplicationsDefinition` metadata | Deprecated API, only works with legacy WatchFaceService |
+| 3 | `XmlSchemaAndComplicationSlotsDefinition` metadata | Newer name, same issue — requires AndroidX WatchFace runtime |
+| 4 | `RUNTIME` intent-filter category | This is an internal category for Google's DWF runtime, not third-party |
+| 5 | `FLAVORS_SUPPORTED` metadata in manifest | Was placed in wrong location; needed in `watch_face_info.xml` instead |
+| 6 | WFF v1 with FlavorsSupported=true | Flavors are a v2-only feature; v1 generates 0 flavors |
+| 7 | XML shape drawable as preview | WFF requires actual PNG bitmap, not vector/shape XML |
+| 8 | `letterSpacing` on `<Text>` element | WFF schema requires it on `<Font>`, not `<Text>` |
+| 9 | `[DAY_0]` expression | Invalid SourceType; correct is `[DAY_Z]` for zero-padded |
+| 10 | `alpha` / `<Variant>` on `<Text>` | WFF ignores alpha on `<Text>`; must use `<PartText>` wrapper |
+| 11 | `adb install -r` to update watch face | DWF runtime caches renders; must fully uninstall + reinstall + re-select |
+| 12 | Dual `<TimeText>` with alpha toggle in one `<DigitalClock>` | Conflicting alpha/Variant on TimeText caused neither to render |
+| 13 | `<Variant>` directly on `<DigitalClock>` | DigitalClock doesn't support Variant as direct child |
+| 14 | Placeholder TTF font file | Empty/corrupt TTF silently drops the entire PartText — no error logged |
+
+---
+
+*Generated from Indian Army Digital Tactical v1.2.1 — Watch Face Format v2*

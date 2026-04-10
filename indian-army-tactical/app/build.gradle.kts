@@ -10,8 +10,8 @@ android {
         applicationId = "com.army.tectical"
         minSdk = 34          // Wear OS 4+ (Required for WFF letterSpacing)
         targetSdk = 35
-        versionCode = 9
-        versionName = "1.2.1"
+        versionCode = 10
+        versionName = "1.2.2"
     }
 
     // ── Release signing ──────────────────────────────────────────────────────
