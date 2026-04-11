@@ -7,13 +7,13 @@
   REFERENCE DESIGN LAYOUT:
   y=40-100  "MIDNIGHT" / "CARRIER" two-line header (white)
   y=106-198 Main time HH:MM — DSEG7 LCD green, large
-  y=152-198 Seconds :SS — DSEG7 LCD green, smaller right side
-  y=202-228 Aircraft carrier silhouette icon
-  y=232-252 Date "SAT 26 OCT" — cyan
-  y=256-266 Battery bar (horizontal, segmented)
-  y=270-282 Battery percentage
-  y=286-302 "FLIGHT DECK OPS" — cyan
-  y=310-342 Fighter jet icon ✈
+  y=144-198 Seconds :SS — DSEG7 LCD green, smaller right side
+  y=203-230 Aircraft carrier silhouette (animated bob + wave lines)
+  y=238-252 Date "SAT 26 OCT" — cyan
+  y=264-274 Battery bar (horizontal, segmented)
+  y=278-290 Battery percentage
+  y=300-314 "FLIGHT DECK OPS" — cyan
+  y=322-342 Fighter jet icon ✈
 
   BEZEL: Amber marks at 12/3/6/9 (prominent),
          Cyan marks at all other hours + half-hours
@@ -194,13 +194,15 @@
 
         <!-- ============================================================ -->
         <!-- MAIN TIME — DSEG7 LCD green                                 -->
-        <!--  HH:MM large (size 78) — always-on LCD ghost effect         -->
-        <!--  :SS smaller (size 38) to the right — active only           -->
+        <!--  Single DigitalClock with HH:MM large + :SS smaller         -->
         <!-- ============================================================ -->
 
-        <!-- Ghost "88:88" — dim background segments (active only) -->
-        <PartText x="18" y="106" width="300" height="92" alpha="20">
+        <!-- Ghost "88:88" — shifted left when seconds shown -->
+        <PartText x="18" y="106" width="298" height="92" alpha="20">
             <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[CONFIGURATION.showSeconds] == false">
+                <Variant target="alpha" value="0" />
+            </Condition>
             <Text align="CENTER">
                 <Font family="@font/dseg7" size="78" weight="BOLD"
                       color="#ff00FF44">
@@ -209,27 +211,22 @@
             </Text>
         </PartText>
 
-        <!-- HH:MM DigitalClock (large) — active mode -->
-        <DigitalClock x="18" y="106" width="300" height="92">
-            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
-                align="CENTER" x="0" y="0" width="300" height="92"
-                alpha="255">
-                <Variant mode="AMBIENT" target="alpha" value="0" />
+        <!-- Ghost "88:88" — centered when seconds hidden -->
+        <PartText x="0" y="106" width="450" height="92" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[CONFIGURATION.showSeconds] == false">
+                <Variant target="alpha" value="20" />
+            </Condition>
+            <Text align="CENTER">
                 <Font family="@font/dseg7" size="78" weight="BOLD"
-                      color="#ff00FF44" />
-            </TimeText>
-            <!-- Ambient: dim monochrome HH:MM -->
-            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
-                align="CENTER" x="0" y="0" width="300" height="92"
-                alpha="0">
-                <Variant mode="AMBIENT" target="alpha" value="255" />
-                <Font family="@font/dseg7" size="78" weight="BOLD"
-                      color="#ff444444" />
-            </TimeText>
-        </DigitalClock>
+                      color="#ff00FF44">
+                    <Template>88:88</Template>
+                </Font>
+            </Text>
+        </PartText>
 
-        <!-- Ghost ":88" for seconds (active only) -->
-        <PartText x="320" y="148" width="110" height="50" alpha="20">
+        <!-- Ghost ":88" for seconds -->
+        <PartText x="316" y="144" width="110" height="50" alpha="20">
             <Variant mode="AMBIENT" target="alpha" value="0" />
             <Condition expression="[CONFIGURATION.showSeconds] == false">
                 <Variant target="alpha" value="0" />
@@ -242,10 +239,24 @@
             </Text>
         </PartText>
 
-        <!-- :SS DigitalClock (smaller, right side) — active only -->
-        <DigitalClock x="320" y="148" width="110" height="50">
+        <!-- Main DigitalClock — all time elements in one clock -->
+        <DigitalClock x="0" y="106" width="450" height="92">
+
+            <!-- Active HH:MM shifted left (when seconds visible) -->
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="18" y="0" width="298" height="92"
+                alpha="255">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Condition expression="[CONFIGURATION.showSeconds] == false">
+                    <Variant target="alpha" value="0" />
+                </Condition>
+                <Font family="@font/dseg7" size="78" weight="BOLD"
+                      color="#ff00FF44" />
+            </TimeText>
+
+            <!-- Active :SS smaller, right side -->
             <TimeText format=":ss" hourFormat="SYNC_TO_DEVICE"
-                align="START" x="0" y="0" width="110" height="50"
+                align="START" x="316" y="38" width="110" height="50"
                 alpha="255">
                 <Variant mode="AMBIENT" target="alpha" value="0" />
                 <Condition expression="[CONFIGURATION.showSeconds] == false">
@@ -254,47 +265,94 @@
                 <Font family="@font/dseg7" size="38" weight="BOLD"
                       color="#ff00FF44" />
             </TimeText>
+
+            <!-- Active HH:MM centered (when seconds hidden) -->
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="450" height="92"
+                alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Condition expression="[CONFIGURATION.showSeconds] == false">
+                    <Variant target="alpha" value="255" />
+                </Condition>
+                <Font family="@font/dseg7" size="78" weight="BOLD"
+                      color="#ff00FF44" />
+            </TimeText>
+
+            <!-- Ambient HH:MM dim monochrome -->
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="450" height="92"
+                alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="255" />
+                <Font family="@font/dseg7" size="78" weight="BOLD"
+                      color="#ff444444" />
+            </TimeText>
+
         </DigitalClock>
 
         <!-- ============================================================ -->
-        <!-- AIRCRAFT CARRIER SILHOUETTE — active only                   -->
-        <!-- Side-view: hull + island superstructure + wave lines        -->
+        <!-- AIRCRAFT CARRIER — animated floating over sea (active only) -->
+        <!-- Ship bobs up/down in 60s cycle, waves oscillate below       -->
+        <!-- Phases: MID(0-14s) → UP(15-29s) → MID(30-44s) → DOWN(45-59s) -->
         <!-- ============================================================ -->
-        <PartDraw x="162" y="206" width="126" height="28">
+
+        <!-- Carrier hull at MID position (y=206) — visible seconds 0-14, 30-44 -->
+        <PartDraw x="162" y="206" width="126" height="24" alpha="255">
             <Variant mode="AMBIENT" target="alpha" value="0" />
-            <!-- Main hull / flight deck (long flat rectangle) -->
-            <Rectangle x="6" y="16" width="114" height="7">
-                <Fill color="[CONFIGURATION.accentColor.0]" />
-            </Rectangle>
-            <!-- Island superstructure (right-of-center, taller) -->
-            <Rectangle x="76" y="4" width="11" height="14">
-                <Fill color="[CONFIGURATION.accentColor.0]" />
-            </Rectangle>
-            <!-- Radar mast on island -->
-            <Rectangle x="79" y="0" width="2" height="6">
-                <Fill color="[CONFIGURATION.accentColor.1]" />
-            </Rectangle>
-            <!-- Small forward deck structure -->
-            <Rectangle x="32" y="10" width="7" height="7">
-                <Fill color="[CONFIGURATION.accentColor.1]" />
-            </Rectangle>
-            <!-- Bow (front slight raise) -->
-            <Rectangle x="116" y="14" width="4" height="6">
-                <Fill color="[CONFIGURATION.accentColor.1]" />
-            </Rectangle>
-            <!-- Wave lines below hull -->
-            <Line startX="10"  startY="25" endX="28"  endY="22">
-                <Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" />
-            </Line>
-            <Line startX="28"  startY="22" endX="48"  endY="25">
-                <Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" />
-            </Line>
-            <Line startX="60"  startY="25" endX="80"  endY="22">
-                <Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" />
-            </Line>
-            <Line startX="80"  startY="22" endX="100" endY="25">
-                <Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" />
-            </Line>
+            <Condition expression="[SECOND] >= 15"><Variant target="alpha" value="0" /></Condition>
+            <Condition expression="[SECOND] >= 30"><Variant target="alpha" value="255" /></Condition>
+            <Condition expression="[SECOND] >= 45"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="6" y="16" width="114" height="7"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Rectangle x="76" y="4" width="11" height="14"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Rectangle x="79" y="0" width="2" height="6"><Fill color="[CONFIGURATION.accentColor.1]" /></Rectangle>
+            <Rectangle x="32" y="10" width="7" height="7"><Fill color="[CONFIGURATION.accentColor.1]" /></Rectangle>
+            <Rectangle x="116" y="14" width="4" height="6"><Fill color="[CONFIGURATION.accentColor.1]" /></Rectangle>
+        </PartDraw>
+
+        <!-- Carrier hull at UP position (y=203) — visible seconds 15-29 -->
+        <PartDraw x="162" y="203" width="126" height="24" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[SECOND] >= 15"><Variant target="alpha" value="255" /></Condition>
+            <Condition expression="[SECOND] >= 30"><Variant target="alpha" value="0" /></Condition>
+            <Rectangle x="6" y="16" width="114" height="7"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Rectangle x="76" y="4" width="11" height="14"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Rectangle x="79" y="0" width="2" height="6"><Fill color="[CONFIGURATION.accentColor.1]" /></Rectangle>
+            <Rectangle x="32" y="10" width="7" height="7"><Fill color="[CONFIGURATION.accentColor.1]" /></Rectangle>
+            <Rectangle x="116" y="14" width="4" height="6"><Fill color="[CONFIGURATION.accentColor.1]" /></Rectangle>
+        </PartDraw>
+
+        <!-- Carrier hull at DOWN position (y=209) — visible seconds 45-59 -->
+        <PartDraw x="162" y="209" width="126" height="24" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[SECOND] >= 45"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="6" y="16" width="114" height="7"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Rectangle x="76" y="4" width="11" height="14"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+            <Rectangle x="79" y="0" width="2" height="6"><Fill color="[CONFIGURATION.accentColor.1]" /></Rectangle>
+            <Rectangle x="32" y="10" width="7" height="7"><Fill color="[CONFIGURATION.accentColor.1]" /></Rectangle>
+            <Rectangle x="116" y="14" width="4" height="6"><Fill color="[CONFIGURATION.accentColor.1]" /></Rectangle>
+        </PartDraw>
+
+        <!-- Sea waves — Set A (visible seconds 0-14, 30-44) -->
+        <PartDraw x="162" y="230" width="126" height="8" alpha="255">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[SECOND] >= 15"><Variant target="alpha" value="0" /></Condition>
+            <Condition expression="[SECOND] >= 30"><Variant target="alpha" value="255" /></Condition>
+            <Condition expression="[SECOND] >= 45"><Variant target="alpha" value="0" /></Condition>
+            <Line startX="10"  startY="4" endX="28"  endY="0"><Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" /></Line>
+            <Line startX="28"  startY="0" endX="48"  endY="4"><Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" /></Line>
+            <Line startX="60"  startY="4" endX="80"  endY="0"><Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" /></Line>
+            <Line startX="80"  startY="0" endX="100" endY="4"><Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" /></Line>
+        </PartDraw>
+
+        <!-- Sea waves — Set B shifted (visible seconds 15-29, 45-59) -->
+        <PartDraw x="162" y="230" width="126" height="8" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[SECOND] >= 15"><Variant target="alpha" value="255" /></Condition>
+            <Condition expression="[SECOND] >= 30"><Variant target="alpha" value="0" /></Condition>
+            <Condition expression="[SECOND] >= 45"><Variant target="alpha" value="255" /></Condition>
+            <Line startX="0"  startY="0" endX="18"  endY="4"><Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" /></Line>
+            <Line startX="18" startY="4" endX="38"  endY="0"><Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" /></Line>
+            <Line startX="50" startY="0" endX="70"  endY="4"><Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" /></Line>
+            <Line startX="70" startY="4" endX="90"  endY="0"><Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" /></Line>
         </PartDraw>
 
         <!-- ============================================================ -->

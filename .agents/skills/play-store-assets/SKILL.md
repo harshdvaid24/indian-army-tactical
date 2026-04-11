@@ -25,19 +25,20 @@ Generate all Google Play Store assets for a watch face + companion app pair.
 ```bash
 adb devices -l
 ```
+
 - Watch: `sdk_gwear_arm64` → typically emulator-5556
 - Phone: `sdk_gphone64_arm64` → typically emulator-5554
 
 ## Asset Specifications
 
-| Asset | Dimensions | Format | Required |
-|-------|-----------|--------|----------|
-| App Icon | 512×512 | PNG, 32-bit, no alpha | Yes |
-| Feature Graphic | 1024×500 | PNG or JPG | Yes |
-| Phone Screenshots | 1080×1920+ (portrait) | PNG | Min 2, max 8 |
-| Watch Screenshots | 384×384 or native | PNG | Min 2, max 8 (Wear OS) |
-| Short Description | max 80 chars | text | Yes |
-| Full Description | max 4000 chars | text | Yes |
+| Asset             | Dimensions            | Format                | Required               |
+| ----------------- | --------------------- | --------------------- | ---------------------- |
+| App Icon          | 512×512               | PNG, 32-bit, no alpha | Yes                    |
+| Feature Graphic   | 1024×500              | PNG or JPG            | Yes                    |
+| Phone Screenshots | 1080×1920+ (portrait) | PNG                   | Min 2, max 8           |
+| Watch Screenshots | 384×384 or native     | PNG                   | Min 2, max 8 (Wear OS) |
+| Short Description | max 80 chars          | text                  | Yes                    |
+| Full Description  | max 4000 chars        | text                  | Yes                    |
 
 ## Step-by-Step Workflow
 
@@ -63,6 +64,7 @@ adb -s $WATCH exec-out screencap -p > $OUTDIR/watch_screenshot_ambient.png
 ```
 
 To switch watch faces (for multi-face screenshots):
+
 ```bash
 # Long-press center to open picker
 adb -s $WATCH shell input swipe 225 225 225 225 2000
@@ -109,6 +111,7 @@ sips -g pixelWidth -g pixelHeight $OUTDIR/app_icon_512.png
 ```
 
 If ImageMagick available (better quality, adds rounded corners):
+
 ```bash
 convert $OUTDIR/watch_screenshot_1.png \
   -resize 512x512 \
@@ -160,24 +163,31 @@ Create `play_store_assets/<app-name>/STORE_LISTING.md` with:
 # Google Play Store Listing — <App Name>
 
 ## App Name
+
 <name> (max 30 chars)
 
 ## Short Description (max 80 chars)
+
 <one-liner describing the watch face>
 
 ## Full Description (max 4000 chars)
+
 <structured description with FEATURES, CUSTOMIZATION, DESIGN, TECHNICAL sections>
 
 ## Content Rating
+
 Everyone
 
 ## Category
+
 Watch Face (for watch face) / Personalization (for companion)
 
 ## Tags
+
 watch face, <style>, digital, LCD, Wear OS, complications, customizable
 
 ## Asset Checklist
+
 - [ ] app_icon_512.png (512×512)
 - [ ] feature_graphic_1024x500.png (1024×500)
 - [ ] watch_screenshot_1.png (main face)
@@ -186,6 +196,7 @@ watch face, <style>, digital, LCD, Wear OS, complications, customizable
 - [ ] phone_screenshot_2.png (companion scrolled)
 
 ## Upload Steps
+
 1. Play Console → Select app → Store presence → Main store listing
 2. Upload app icon, feature graphic, screenshots
 3. Fill short + full description
