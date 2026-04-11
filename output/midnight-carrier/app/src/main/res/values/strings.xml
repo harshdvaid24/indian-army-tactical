@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Midnight Carrier</string>
+    <string name="watch_face_name">Midnight Carrier</string>
+    <string name="watch_face_description">Inspired by aircraft carriers under the night sky. Dark matte background with runway-style markers and glowing indicators — precision operations in low light. Dedicated to the Indian Navy.</string>
+
+    <!-- Accent color configuration -->
+    <string name="accent_color_label">Accent Color</string>
+    <string name="color_cyan">Carrier Cyan</string>
+    <string name="color_amber">Runway Amber</string>
+    <string name="color_green">Radar Green</string>
+    <string name="color_red">Alert Red</string>
+    <string name="color_white">Navigation White</string>
+
+    <!-- Background theme configuration -->
+    <string name="bg_theme_label">Background Theme</string>
+    <string name="bg_carrier">Carrier Deck</string>
+    <string name="bg_blackout">Blackout</string>
+    <string name="bg_nightops">Night Operations</string>
+
+    <!-- Seconds toggle configuration -->
+    <string name="show_seconds_label">Show Seconds</string>
+
+    <!-- Flavor labels -->
+    <string name="flavor_cyan">Carrier Cyan</string>
+    <string name="flavor_amber">Runway Lights</string>
+    <string name="flavor_green">Radar Sweep</string>
+    <string name="flavor_white">Silent Running</string>
+    <string name="flavor_red">Battle Stations</string>
+
+    <!-- Complication slot names -->
+    <string name="complication_weather">Weather / Info</string>
+    <string name="complication_hr">Heart Rate</string>
+    <string name="complication_steps">Step Count</string>
+</resources>

@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+==============================================================
+  Indian Army Tactical - Watch Face Format v2
+  Canvas: 450x450  CX=225  CY=225
+
+  USER CONFIGURATIONS
+  1. accentColor  ColorConfig  (.0=primary LCD  .1=secondary  .2=frame/bezel)
+  2. bgTheme      ColorConfig  (.0=scene bg  .1=panel bg  .2=panel stroke)
+  3. showSeconds  BoolConfig   (TRUE=1 / FALSE=0)
+
+  LAYOUT (450px canvas)
+  y=30-38  Accent lines (optional)
+  y=44-80  Header
+  y=84-164 Sub-display  date + weather complication
+  y=172-262 Main time  ghost layer + active layer
+  y=271-275 Divider double line
+  y=283-352 Bottom panels  BATT / HR / STEPS
+  y=360-388 Footer
+==============================================================
+-->
+<WatchFace width="450" height="450">
+    <Metadata key="CLOCK_TYPE" value="DIGITAL" />
+    <Metadata key="PREVIEW_TIME" value="14:30:00" />
+
+    <!-- ============================================================== -->
+    <!-- USER CONFIGURATIONS                                            -->
+    <!-- ============================================================== -->
+    <UserConfigurations>
+
+        <!--  LCD Accent Colour  (.0=primary .1=secondary .2=frame)  -->
+        <ColorConfiguration
+            id="accentColor"
+            defaultValue="amber"
+            displayName="@string/accent_color_label"
+            screenReaderText="@string/accent_color_label">
+            <ColorOption id="amber"   displayName="@string/color_amber"
+                colors="#ffFF8C00 #ffCCAA00 #ff4A5D23" />
+            <ColorOption id="green"   displayName="@string/color_green"
+                colors="#ff4CAF50 #ff81C784 #ff2E7D32" />
+            <ColorOption id="blue"   displayName="@string/color_blue"
+                colors="#ff42A5F5 #ff90CAF9 #ff1565C0" />
+            <ColorOption id="red"   displayName="@string/color_red"
+                colors="#ffFF4444 #ffCC3333 #ff8B0000" />
+            <ColorOption id="stealth"   displayName="@string/color_stealth"
+                colors="#ffDDDDDD #ffAAAAAA #ff555555" />
+        </ColorConfiguration>
+
+        <!--  Background Theme  (.0=scene-bg .1=panel-bg .2=panel-stroke)  -->
+        <ColorConfiguration
+            id="bgTheme"
+            defaultValue="tactical"
+            displayName="@string/bg_theme_label"
+            screenReaderText="@string/bg_theme_label">
+            <ColorOption id="tactical" displayName="@string/bg_tactical"
+                colors="#ff0A0A0A #ff0D1A0D #ff3A4A2A" />
+            <ColorOption id="stealth" displayName="@string/bg_stealth"
+                colors="#ff050505 #ff080808 #ff222222" />
+            <ColorOption id="urban" displayName="@string/bg_urban"
+                colors="#ff111418 #ff1A1E22 #ff3A3E42" />
+        </ColorConfiguration>
+
+        <!--  Time Format: follows device system setting via SYNC_TO_DEVICE / IS_24_HOUR_MODE  -->
+
+        <!--  Show/Hide Seconds  -->
+        <BooleanConfiguration
+            id="showSeconds"
+            defaultValue="TRUE"
+            displayName="@string/show_seconds_label"
+            screenReaderText="@string/show_seconds_label" />
+
+        <!--  Flavors - pre-set combos shown in picker carousel  -->
+        <Flavors defaultValue="tactical_amber">
+            <Flavor id="tactical_amber" displayName="@string/flavor_amber">
+                <Configuration id="accentColor" optionId="amber" />
+                <Configuration id="bgTheme"     optionId="tactical" />
+            </Flavor>
+            <Flavor id="tactical_green" displayName="@string/flavor_green">
+                <Configuration id="accentColor" optionId="green" />
+                <Configuration id="bgTheme"     optionId="tactical" />
+            </Flavor>
+            <Flavor id="stealth_black" displayName="@string/flavor_stealth">
+                <Configuration id="accentColor" optionId="stealth" />
+                <Configuration id="bgTheme"     optionId="stealth" />
+            </Flavor>
+            <Flavor id="urban_blue" displayName="@string/flavor_blue">
+                <Configuration id="accentColor" optionId="blue" />
+                <Configuration id="bgTheme"     optionId="urban" />
+            </Flavor>
+            <Flavor id="tactical_red" displayName="@string/flavor_red">
+                <Configuration id="accentColor" optionId="red" />
+                <Configuration id="bgTheme"     optionId="tactical" />
+            </Flavor>
+        </Flavors>
+
+    </UserConfigurations>
+
+    <!-- ============================================================== -->
+    <!-- SCENE                                                          -->
+    <!-- ============================================================== -->
+    <Scene backgroundColor="[CONFIGURATION.bgTheme.0]">
+
+        <!-- ========================================================== -->
+        <!-- BEZEL - 5 rings + 12 tactical tick marks                   -->
+        <!-- ========================================================== -->
+
+        <!-- Outer ring group: always visible -->
+        <PartDraw x="0" y="0" width="450" height="450">
+            <!-- Outermost dark containment ring -->
+            <Arc centerX="225" centerY="225" width="446" height="446"
+                 startAngle="0" endAngle="360" direction="CLOCKWISE">
+                <Stroke color="#ff1A1A1A" thickness="3" />
+            </Arc>
+            <!-- Primary accent ring - follows accentColor.2 (frame color) -->
+            <Arc centerX="225" centerY="225" width="436" height="436"
+                 startAngle="0" endAngle="360" direction="CLOCKWISE">
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="3" />
+            </Arc>
+            <!-- Thin dark separator -->
+            <Arc centerX="225" centerY="225" width="426" height="426"
+                 startAngle="0" endAngle="360" direction="CLOCKWISE">
+                <Stroke color="#ff2A2A2A" thickness="1" />
+            </Arc>
+        </PartDraw>
+
+        <!-- Inner double-ring - the design reference inner glow bezel -->
+        <PartDraw x="0" y="0" width="450" height="450">
+            <Arc centerX="225" centerY="225" width="408" height="408"
+                 startAngle="0" endAngle="360" direction="CLOCKWISE">
+                <Stroke color="[CONFIGURATION.bgTheme.2]" thickness="1" />
+            </Arc>
+            <Arc centerX="225" centerY="225" width="402" height="402"
+                 startAngle="0" endAngle="360" direction="CLOCKWISE">
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="2" />
+            </Arc>
+        </PartDraw>
+
+        <!-- 12 tactical tick marks every 30 degrees - active only -->
+        <PartDraw x="0" y="0" width="450" height="450">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="0"   endAngle="2"   direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="30"  endAngle="32"  direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="60"  endAngle="62"  direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="90"  endAngle="92"  direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="120" endAngle="122" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="150" endAngle="152" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="180" endAngle="182" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="210" endAngle="212" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="240" endAngle="242" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="270" endAngle="272" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="300" endAngle="302" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440" startAngle="330" endAngle="332" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.2]" thickness="8" /></Arc>
+        </PartDraw>
+
+        <!-- ========================================================== -->
+        <!-- ACCENT LINES - active only (optional, controlled by design)-->
+        <!-- ========================================================== -->
+        <PartDraw x="0" y="0" width="450" height="450">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Line startX="145" startY="30" endX="305" endY="30"><Stroke color="#ffFF9933" thickness="2" /></Line>
+            <Line startX="145" startY="34" endX="305" endY="34"><Stroke color="#ffE8E8E8" thickness="1" /></Line>
+            <Line startX="145" startY="38" endX="305" endY="38"><Stroke color="#ff138808" thickness="2" /></Line>
+        </PartDraw>
+
+        <!-- ========================================================== -->
+        <!-- HEADER - active only                                       -->
+        <!-- ========================================================== -->
+        <PartText x="0" y="44" width="450" height="36">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="30" weight="BOLD"
+                      letterSpacing="0.18" color="#ffE8E8E8">
+                    <Template>INDIAN ARMY</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- ========================================================== -->
+        <!-- SUB-DISPLAY: date + DOY + weather - active only           -->
+        <!-- ========================================================== -->
+        <PartDraw x="60" y="84" width="330" height="80">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <RoundRectangle x="0" y="0" width="330" height="80" cornerRadiusX="4" cornerRadiusY="4">
+                <Fill color="[CONFIGURATION.bgTheme.1]" />
+                <Stroke color="[CONFIGURATION.bgTheme.2]" thickness="1" />
+            </RoundRectangle>
+        </PartDraw>
+
+        <!-- Row 1: DATE label + full date -->
+        <PartText x="72" y="88" width="40" height="18">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="10" weight="BOLD" letterSpacing="0.16" color="[CONFIGURATION.accentColor.2]">
+                    <Template>DATE</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <PartText x="110" y="86" width="268" height="24">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="17" weight="BOLD"
+                      letterSpacing="0.08" color="[CONFIGURATION.accentColor.1]">
+                    <Template><![CDATA[%s  %s-%s-%d]]>
+                        <Parameter expression="[DAY_OF_WEEK_S]" />
+                        <Parameter expression="[DAY_Z]" />
+                        <Parameter expression="[MONTH_S]" />
+                        <Parameter expression="[YEAR]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- Accent divider line inside sub-display -->
+        <PartDraw x="60" y="84" width="330" height="80">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Line startX="12" startY="34" endX="318" endY="34">
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
+            </Line>
+        </PartDraw>
+
+        <!-- Row 2: DOY counter + Weather complication -->
+        <PartText x="72" y="120" width="40" height="18">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="10" weight="BOLD" letterSpacing="0.16" color="[CONFIGURATION.accentColor.2]">
+                    <Template>DOY</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <PartText x="108" y="120" width="44" height="22">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="16" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%03d]]>
+                        <Parameter expression="[DAY_OF_YEAR]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+        <!-- Vertical separator dot -->
+        <PartText x="156" y="120" width="12" height="22">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="14" weight="BOLD" color="[CONFIGURATION.accentColor.2]">
+                    <Template>|</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <!-- WX label -->
+        <PartText x="172" y="120" width="24" height="18">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="START">
+                <Font family="SYNC_TO_DEVICE" size="10" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
+                    <Template>WX</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <ComplicationSlot slotId="100" x="194" y="116" width="184" height="32"
+            name="@string/complication_weather"
+            supportedTypes="SHORT_TEXT LONG_TEXT RANGED_VALUE">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <DefaultProviderPolicy defaultSystemDataSource="SUNRISE_SUNSET"
+                defaultDataSourceType="SHORT_TEXT" />
+            <BoundingOval x="0" y="0" width="184" height="32" />
+            <Complication type="SHORT_TEXT">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="16" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="RANGED_VALUE">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="16" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="LONG_TEXT">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="14" weight="NORMAL" color="[CONFIGURATION.accentColor.0]">
+                        <Template><![CDATA[%s]]><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="NOT_CONFIGURED">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="13" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                        <Template>TAP TO SET</Template>
+                    </Font>
+                </Text>
+            </Complication>
+            <Complication type="NO_DATA">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="13" weight="NORMAL" color="[CONFIGURATION.accentColor.2]">
+                        <Template>NO DATA</Template>
+                    </Font>
+                </Text>
+            </Complication>
+        </ComplicationSlot>
+
+        <!-- ========================================================== -->
+        <!-- MAIN TIME - DigitalClock with TimeText (proper WFF)        -->
+        <!--                                                            -->
+        <!--  Ghost layer: decorative PartText "88:88:88" at alpha=18   -->
+        <!--  Active: TimeText with custom font, SYNC_TO_DEVICE format  -->
+        <!--  Ambient: TimeText HH:MM only, monochrome                  -->
+        <!-- ========================================================== -->
+
+        <!-- GHOST shadow layer: decorative LCD segment shadow (active only) -->
+        <PartText x="0" y="172" width="450" height="90" alpha="18">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="@font/dseg7" size="68" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Template>88:88:88</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- DigitalClock: system-managed time display -->
+        <DigitalClock x="0" y="172" width="450" height="90">
+
+            <!-- Active mode WITH seconds (showSeconds=TRUE) -->
+            <TimeText format="hh:mm:ss" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="450" height="90"
+                alpha="255">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Condition expression="[CONFIGURATION.showSeconds] == false">
+                    <Variant target="alpha" value="0" />
+                </Condition>
+                <Font family="@font/dseg7" size="68" weight="BOLD"
+                      color="[CONFIGURATION.accentColor.0]" />
+            </TimeText>
+
+            <!-- Active mode WITHOUT seconds (showSeconds=FALSE) -->
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="450" height="90"
+                alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Condition expression="[CONFIGURATION.showSeconds] == false">
+                    <Variant target="alpha" value="255" />
+                </Condition>
+                <Font family="@font/dseg7" size="78" weight="BOLD"
+                      color="[CONFIGURATION.accentColor.0]" />
+            </TimeText>
+
+            <!-- Ambient mode: HH:MM only, monochrome, no ghost -->
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="450" height="90"
+                alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="255" />
+                <Font family="@font/dseg7" size="82" weight="BOLD"
+                      color="#ff888888" />
+            </TimeText>
+
+        </DigitalClock>
+
+        <!-- ========================================================== -->
+        <!-- SIDE INDICATORS: 24H / 12H / SIG / AM / PM                -->
+        <!--  Uses [IS_24_HOUR_MODE] to follow device system setting    -->
+        <!-- ========================================================== -->
+
+        <!-- 24H label (shown when device is in 24H mode) -->
+        <PartText x="390" y="188" width="50" height="18" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="255" />
+            </Condition>
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="12" weight="BOLD" letterSpacing="0.10" color="[CONFIGURATION.accentColor.2]">
+                    <Template>24H</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- 12H label (shown when device is in 12H mode) -->
+        <PartText x="390" y="188" width="50" height="18" alpha="255">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="0" />
+            </Condition>
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="12" weight="BOLD" letterSpacing="0.10" color="[CONFIGURATION.accentColor.2]">
+                    <Template>12H</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- AM/PM badge - 12H mode only (hidden in 24H) -->
+        <!-- Background pill -->
+        <PartDraw x="10" y="218" width="44" height="22" alpha="255">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="0" />
+            </Condition>
+            <RoundRectangle x="0" y="0" width="44" height="22" cornerRadiusX="4" cornerRadiusY="4">
+                <Fill color="[CONFIGURATION.bgTheme.1]" />
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
+            </RoundRectangle>
+        </PartDraw>
+        <PartText x="10" y="218" width="44" height="22" alpha="255">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="0" />
+            </Condition>
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="14" weight="BOLD" letterSpacing="0.08" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%s]]>
+                        <Parameter expression="[HOUR_0_23] >= 12 ? 'PM' : 'AM'" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- SIG indicator (shown in 24H mode, hidden in 12H) -->
+        <PartDraw x="10" y="218" width="44" height="22" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="255" />
+            </Condition>
+            <RoundRectangle x="0" y="0" width="44" height="22" cornerRadiusX="4" cornerRadiusY="4">
+                <Fill color="[CONFIGURATION.bgTheme.1]" />
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
+            </RoundRectangle>
+        </PartDraw>
+        <PartText x="10" y="218" width="44" height="22" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[IS_24_HOUR_MODE]">
+                <Variant target="alpha" value="255" />
+            </Condition>
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
+                    <Template>SIG</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- ========================================================== -->
+        <!-- DIVIDER  double line below time - active only              -->
+        <!-- ========================================================== -->
+        <PartDraw x="0" y="0" width="450" height="450">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Line startX="82" startY="271" endX="368" endY="271">
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="2" />
+            </Line>
+            <Line startX="82" startY="275" endX="368" endY="275">
+                <Stroke color="[CONFIGURATION.bgTheme.2]" thickness="1" />
+            </Line>
+        </PartDraw>
+
+        <!-- ========================================================== -->
+        <!-- BOTTOM PANEL 1: BATT with live progress bar - active only  -->
+        <!-- ========================================================== -->
+        <PartDraw x="62" y="283" width="96" height="66">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <RoundRectangle x="0" y="0" width="96" height="66" cornerRadiusX="4" cornerRadiusY="4">
+                <Fill color="[CONFIGURATION.bgTheme.1]" />
+                <Stroke color="[CONFIGURATION.bgTheme.2]" thickness="1" />
+            </RoundRectangle>
+        </PartDraw>
+        <PartText x="62" y="287" width="96" height="16">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
+                    <Template>BATT</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <PartText x="62" y="305" width="96" height="28">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="20" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%d%%]]>
+                        <Parameter expression="[BATTERY_PERCENT]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+        <!-- Battery bar: segments start hidden (alpha=0), shown via >= condition -->
+        <!-- Track (always visible) -->
+        <PartDraw x="62" y="337" width="96" height="6">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Rectangle x="0" y="0" width="96" height="6"><Fill color="#22FFFFFF" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 1: show when battery >= 10 -->
+        <PartDraw x="62" y="337" width="9" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 10"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 2: show when battery >= 20 -->
+        <PartDraw x="72" y="337" width="9" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 20"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 3: show when battery >= 30 -->
+        <PartDraw x="82" y="337" width="9" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 30"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 4: show when battery >= 40 -->
+        <PartDraw x="92" y="337" width="9" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 40"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 5: show when battery >= 50 -->
+        <PartDraw x="102" y="337" width="9" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 50"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 6: show when battery >= 60 -->
+        <PartDraw x="112" y="337" width="9" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 60"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 7: show when battery >= 70 -->
+        <PartDraw x="122" y="337" width="9" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 70"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 8: show when battery >= 80 -->
+        <PartDraw x="132" y="337" width="9" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 80"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 9: show when battery >= 90 -->
+        <PartDraw x="142" y="337" width="9" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 90"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="9" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <!-- Segment 10: show only at 100 -->
+        <PartDraw x="152" y="337" width="6" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 100"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="6" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+
+        <!-- ========================================================== -->
+        <!-- BOTTOM PANEL 2: HR (Heart Rate) - direct system data       -->
+        <!-- ========================================================== -->
+        <PartDraw x="168" y="283" width="114" height="66">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <RoundRectangle x="0" y="0" width="114" height="66" cornerRadiusX="4" cornerRadiusY="4">
+                <Fill color="[CONFIGURATION.bgTheme.1]" />
+                <Stroke color="[CONFIGURATION.bgTheme.2]" thickness="1" />
+            </RoundRectangle>
+        </PartDraw>
+        <PartText x="168" y="287" width="114" height="16">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
+                    <Template>HR</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <PartText x="168" y="305" width="114" height="40">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="22" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%d BPM]]>
+                        <Parameter expression="[HEART_RATE]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- ========================================================== -->
+        <!-- BOTTOM PANEL 3: STEPS (Step Count) - direct system data    -->
+        <!-- ========================================================== -->
+        <PartDraw x="292" y="283" width="96" height="66">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <RoundRectangle x="0" y="0" width="96" height="66" cornerRadiusX="4" cornerRadiusY="4">
+                <Fill color="[CONFIGURATION.bgTheme.1]" />
+                <Stroke color="[CONFIGURATION.bgTheme.2]" thickness="1" />
+            </RoundRectangle>
+        </PartDraw>
+        <PartText x="292" y="287" width="96" height="16">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="11" weight="BOLD" letterSpacing="0.14" color="[CONFIGURATION.accentColor.2]">
+                    <Template>STEPS</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <PartText x="292" y="305" width="96" height="40">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="18" weight="BOLD" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%d]]>
+                        <Parameter expression="[STEP_COUNT]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- ========================================================== -->
+        <!-- FOOTER - active only                                       -->
+        <!-- ========================================================== -->
+        <PartText x="0" y="360" width="450" height="26">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="16" weight="BOLD"
+                      letterSpacing="0.30" color="[CONFIGURATION.accentColor.2]">
+                    <Template>=== TACTICAL ===</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- ========================================================== -->
+        <!-- AMBIENT ELEMENTS  (alpha=0 in active, shown in ambient)    -->
+        <!-- ========================================================== -->
+
+        <!-- Ambient subtitle -->
+        <PartText x="0" y="148" width="450" height="22" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="255" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="15" weight="NORMAL"
+                      letterSpacing="0.12" color="#ff555555">
+                    <Template>INDIAN ARMY</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- Ambient date below time -->
+        <PartText x="0" y="276" width="450" height="24" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="255" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="18" weight="NORMAL" color="#ff444444">
+                    <Template><![CDATA[%s %s]]>
+                        <Parameter expression="[DAY_Z]" />
+                        <Parameter expression="[MONTH_S]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+
+    </Scene>
+</WatchFace>

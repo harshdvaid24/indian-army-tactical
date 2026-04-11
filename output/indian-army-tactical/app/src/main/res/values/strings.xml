@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Indian Army Tactical</string>
+    <string name="watch_face_name">Indian Army Tactical</string>
+    <string name="watch_face_description">Rugged 7-segment LCD tactical watch face inspired by Indian Army field watches. Features military time, battery status, and tactical complications.</string>
+
+    <!-- Accent color configuration -->
+    <string name="accent_color_label">Accent Color</string>
+    <string name="color_amber">Amber</string>
+    <string name="color_green">Green</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_red">Red Alert</string>
+    <string name="color_stealth">Stealth Gray</string>
+
+    <!-- Background theme configuration -->
+    <string name="bg_theme_label">Background Theme</string>
+    <string name="bg_tactical">Tactical (Dark Green)</string>
+    <string name="bg_stealth">Stealth (Black)</string>
+    <string name="bg_urban">Urban (Dark Gray)</string>
+
+    <!-- Seconds toggle configuration -->
+    <string name="show_seconds_label">Show Seconds</string>
+
+    <!-- Flavor labels -->
+    <string name="flavor_amber">Tactical Amber</string>
+    <string name="flavor_green">Tactical Green</string>
+    <string name="flavor_stealth">Stealth Black</string>
+    <string name="flavor_blue">Urban Blue</string>
+    <string name="flavor_red">Red Alert</string>
+
+    <!-- Complication slot names -->
+    <string name="complication_weather">Weather / Info</string>
+    <string name="complication_hr">Heart Rate</string>
+    <string name="complication_steps">Step Count</string>
+</resources>

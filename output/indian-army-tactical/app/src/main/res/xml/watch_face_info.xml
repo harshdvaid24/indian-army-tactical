@@ -1,0 +1,8 @@
+<WatchFaceInfo>
+    <Preview value="@drawable/preview" />
+    <!-- Required for Flavors to work in WFP2 picker -->
+    <MultipleInstancesAllowed value="true" />
+    <Editable value="true" />
+    <!-- Required for Flavors -->
+    <FlavorsSupported value="true" />
+</WatchFaceInfo>

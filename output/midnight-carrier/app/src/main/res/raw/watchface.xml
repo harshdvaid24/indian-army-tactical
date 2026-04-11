@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+==============================================================
+  Midnight Carrier - Watch Face Format v2
+  Canvas: 450x450  CX=225  CY=225
+
+  REFERENCE DESIGN LAYOUT:
+  y=40-100  "MIDNIGHT" / "CARRIER" two-line header (white)
+  y=106-198 Main time HH:MM — DSEG7 LCD green, large
+  y=152-198 Seconds :SS — DSEG7 LCD green, smaller right side
+  y=202-228 Aircraft carrier silhouette icon
+  y=232-252 Date "SAT 26 OCT" — cyan
+  y=256-266 Battery bar (horizontal, segmented)
+  y=270-282 Battery percentage
+  y=286-302 "FLIGHT DECK OPS" — cyan
+  y=310-342 Fighter jet icon ✈
+
+  BEZEL: Amber marks at 12/3/6/9 (prominent),
+         Cyan marks at all other hours + half-hours
+==============================================================
+-->
+<WatchFace width="450" height="450">
+    <Metadata key="CLOCK_TYPE" value="DIGITAL" />
+    <Metadata key="PREVIEW_TIME" value="23:48:12" />
+
+    <!-- ============================================================== -->
+    <!-- USER CONFIGURATIONS                                            -->
+    <!-- ============================================================== -->
+    <UserConfigurations>
+
+        <ColorConfiguration
+            id="accentColor"
+            defaultValue="carrier_cyan"
+            displayName="@string/accent_color_label"
+            screenReaderText="@string/accent_color_label">
+            <ColorOption id="carrier_cyan"  displayName="@string/color_cyan"
+                colors="#ff00E5FF #ff00B8CC #ff0A3A4A" />
+            <ColorOption id="runway_amber"  displayName="@string/color_amber"
+                colors="#ffFFAA00 #ffCC8800 #ff4A3A0A" />
+            <ColorOption id="radar_green"   displayName="@string/color_green"
+                colors="#ff00FF7F #ff00CC66 #ff0A4A2A" />
+            <ColorOption id="alert_red"     displayName="@string/color_red"
+                colors="#ffFF2222 #ffCC1A1A #ff4A0A0A" />
+            <ColorOption id="nav_white"     displayName="@string/color_white"
+                colors="#ffCCDDEE #ff8899AA #ff2A3540" />
+        </ColorConfiguration>
+
+        <ColorConfiguration
+            id="bgTheme"
+            defaultValue="carrier"
+            displayName="@string/bg_theme_label"
+            screenReaderText="@string/bg_theme_label">
+            <ColorOption id="carrier"   displayName="@string/bg_carrier"
+                colors="#ff050810 #ff0A1020 #ff1A2540" />
+            <ColorOption id="blackout"  displayName="@string/bg_blackout"
+                colors="#ff030305 #ff060610 #ff151525" />
+            <ColorOption id="nightops"  displayName="@string/bg_nightops"
+                colors="#ff080A12 #ff0E1220 #ff1E2545" />
+        </ColorConfiguration>
+
+        <BooleanConfiguration
+            id="showSeconds"
+            defaultValue="TRUE"
+            displayName="@string/show_seconds_label"
+            screenReaderText="@string/show_seconds_label" />
+
+        <Flavors defaultValue="carrier_cyan">
+            <Flavor id="carrier_cyan"   displayName="@string/flavor_cyan">
+                <Configuration id="accentColor" optionId="carrier_cyan" />
+                <Configuration id="bgTheme"     optionId="carrier" />
+            </Flavor>
+            <Flavor id="runway_amber"   displayName="@string/flavor_amber">
+                <Configuration id="accentColor" optionId="runway_amber" />
+                <Configuration id="bgTheme"     optionId="nightops" />
+            </Flavor>
+            <Flavor id="radar_green"    displayName="@string/flavor_green">
+                <Configuration id="accentColor" optionId="radar_green" />
+                <Configuration id="bgTheme"     optionId="carrier" />
+            </Flavor>
+            <Flavor id="blackout_white" displayName="@string/flavor_white">
+                <Configuration id="accentColor" optionId="nav_white" />
+                <Configuration id="bgTheme"     optionId="blackout" />
+            </Flavor>
+            <Flavor id="alert_red"      displayName="@string/flavor_red">
+                <Configuration id="accentColor" optionId="alert_red" />
+                <Configuration id="bgTheme"     optionId="carrier" />
+            </Flavor>
+        </Flavors>
+
+    </UserConfigurations>
+
+    <!-- ============================================================== -->
+    <!-- SCENE                                                          -->
+    <!-- ============================================================== -->
+    <Scene backgroundColor="[CONFIGURATION.bgTheme.0]">
+
+        <!-- ============================================================ -->
+        <!-- BEZEL - Outer rings + alternating amber/cyan tick marks     -->
+        <!-- Amber: prominent at 12, 3, 6, 9 (cardinal positions)       -->
+        <!-- Cyan: all other hours + half-hour sub-marks                 -->
+        <!-- ============================================================ -->
+
+        <!-- Outer containment rings -->
+        <PartDraw x="0" y="0" width="450" height="450">
+            <Arc centerX="225" centerY="225" width="448" height="448"
+                 startAngle="0" endAngle="360" direction="CLOCKWISE">
+                <Stroke color="#ff060608" thickness="6" />
+            </Arc>
+            <Arc centerX="225" centerY="225" width="440" height="440"
+                 startAngle="0" endAngle="360" direction="CLOCKWISE">
+                <Stroke color="#ff0E1420" thickness="3" />
+            </Arc>
+            <Arc centerX="225" centerY="225" width="433" height="433"
+                 startAngle="0" endAngle="360" direction="CLOCKWISE">
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
+            </Arc>
+        </PartDraw>
+
+        <!-- AMBER cardinal marks: 12, 3, 6, 9 — active only (prominent) -->
+        <PartDraw x="0" y="0" width="450" height="450">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <!-- 12 o'clock — largest amber mark -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="355" endAngle="5"   direction="CLOCKWISE"><Stroke color="#ffFFAA00" thickness="14" /></Arc>
+            <!-- 3 o'clock — amber -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="85"  endAngle="95"  direction="CLOCKWISE"><Stroke color="#ffFFAA00" thickness="10" /></Arc>
+            <!-- 6 o'clock — amber -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="175" endAngle="185" direction="CLOCKWISE"><Stroke color="#ffFFAA00" thickness="10" /></Arc>
+            <!-- 9 o'clock — amber -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="265" endAngle="275" direction="CLOCKWISE"><Stroke color="#ffFFAA00" thickness="10" /></Arc>
+        </PartDraw>
+
+        <!-- CYAN hour marks: 1,2,4,5,7,8,10,11 — active only -->
+        <PartDraw x="0" y="0" width="450" height="450">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="28"  endAngle="32"  direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="7" /></Arc>
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="58"  endAngle="62"  direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="7" /></Arc>
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="118" endAngle="122" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="7" /></Arc>
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="148" endAngle="152" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="7" /></Arc>
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="208" endAngle="212" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="7" /></Arc>
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="238" endAngle="242" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="7" /></Arc>
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="298" endAngle="302" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="7" /></Arc>
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="328" endAngle="332" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="7" /></Arc>
+        </PartDraw>
+
+        <!-- Half-hour sub-marks (every 15°, between hours) — active only -->
+        <PartDraw x="0" y="0" width="450" height="450">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <!-- Between 12-1: amber -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="13"  endAngle="16"  direction="CLOCKWISE"><Stroke color="#ffFFAA00" thickness="4" /></Arc>
+            <!-- Between 1-2: cyan -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="43"  endAngle="46"  direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="4" /></Arc>
+            <!-- Between 2-3: cyan -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="73"  endAngle="76"  direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="4" /></Arc>
+            <!-- Between 3-4: amber -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="103" endAngle="106" direction="CLOCKWISE"><Stroke color="#ffFFAA00" thickness="4" /></Arc>
+            <!-- Between 4-5: cyan -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="133" endAngle="136" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="4" /></Arc>
+            <!-- Between 5-6: cyan -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="163" endAngle="166" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="4" /></Arc>
+            <!-- Between 6-7: amber -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="193" endAngle="196" direction="CLOCKWISE"><Stroke color="#ffFFAA00" thickness="4" /></Arc>
+            <!-- Between 7-8: cyan -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="223" endAngle="226" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="4" /></Arc>
+            <!-- Between 8-9: cyan -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="253" endAngle="256" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="4" /></Arc>
+            <!-- Between 9-10: amber -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="283" endAngle="286" direction="CLOCKWISE"><Stroke color="#ffFFAA00" thickness="4" /></Arc>
+            <!-- Between 10-11: cyan -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="313" endAngle="316" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="4" /></Arc>
+            <!-- Between 11-12: cyan -->
+            <Arc centerX="225" centerY="225" width="444" height="444" startAngle="343" endAngle="346" direction="CLOCKWISE"><Stroke color="[CONFIGURATION.accentColor.0]" thickness="4" /></Arc>
+        </PartDraw>
+
+        <!-- ============================================================ -->
+        <!-- "MIDNIGHT" / "CARRIER" — two-line centered header           -->
+        <!-- White text, active + ambient visible                         -->
+        <!-- ============================================================ -->
+        <PartText x="0" y="42" width="450" height="30">
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="24" weight="BOLD"
+                      letterSpacing="0.24" color="#ffCCDDEE">
+                    <Template>MIDNIGHT</Template>
+                </Font>
+            </Text>
+        </PartText>
+        <PartText x="0" y="72" width="450" height="30">
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="24" weight="BOLD"
+                      letterSpacing="0.24" color="#ffCCDDEE">
+                    <Template>CARRIER</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- ============================================================ -->
+        <!-- MAIN TIME — DSEG7 LCD green                                 -->
+        <!--  HH:MM large (size 78) — always-on LCD ghost effect         -->
+        <!--  :SS smaller (size 38) to the right — active only           -->
+        <!-- ============================================================ -->
+
+        <!-- Ghost "88:88" — dim background segments (active only) -->
+        <PartText x="18" y="106" width="300" height="92" alpha="20">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="@font/dseg7" size="78" weight="BOLD"
+                      color="#ff00FF44">
+                    <Template>88:88</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- HH:MM DigitalClock (large) — active mode -->
+        <DigitalClock x="18" y="106" width="300" height="92">
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="300" height="92"
+                alpha="255">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Font family="@font/dseg7" size="78" weight="BOLD"
+                      color="#ff00FF44" />
+            </TimeText>
+            <!-- Ambient: dim monochrome HH:MM -->
+            <TimeText format="hh:mm" hourFormat="SYNC_TO_DEVICE"
+                align="CENTER" x="0" y="0" width="300" height="92"
+                alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="255" />
+                <Font family="@font/dseg7" size="78" weight="BOLD"
+                      color="#ff444444" />
+            </TimeText>
+        </DigitalClock>
+
+        <!-- Ghost ":88" for seconds (active only) -->
+        <PartText x="320" y="148" width="110" height="50" alpha="20">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[CONFIGURATION.showSeconds] == false">
+                <Variant target="alpha" value="0" />
+            </Condition>
+            <Text align="START">
+                <Font family="@font/dseg7" size="38" weight="BOLD"
+                      color="#ff00FF44">
+                    <Template>:88</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- :SS DigitalClock (smaller, right side) — active only -->
+        <DigitalClock x="320" y="148" width="110" height="50">
+            <TimeText format=":ss" hourFormat="SYNC_TO_DEVICE"
+                align="START" x="0" y="0" width="110" height="50"
+                alpha="255">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Condition expression="[CONFIGURATION.showSeconds] == false">
+                    <Variant target="alpha" value="0" />
+                </Condition>
+                <Font family="@font/dseg7" size="38" weight="BOLD"
+                      color="#ff00FF44" />
+            </TimeText>
+        </DigitalClock>
+
+        <!-- ============================================================ -->
+        <!-- AIRCRAFT CARRIER SILHOUETTE — active only                   -->
+        <!-- Side-view: hull + island superstructure + wave lines        -->
+        <!-- ============================================================ -->
+        <PartDraw x="162" y="206" width="126" height="28">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <!-- Main hull / flight deck (long flat rectangle) -->
+            <Rectangle x="6" y="16" width="114" height="7">
+                <Fill color="[CONFIGURATION.accentColor.0]" />
+            </Rectangle>
+            <!-- Island superstructure (right-of-center, taller) -->
+            <Rectangle x="76" y="4" width="11" height="14">
+                <Fill color="[CONFIGURATION.accentColor.0]" />
+            </Rectangle>
+            <!-- Radar mast on island -->
+            <Rectangle x="79" y="0" width="2" height="6">
+                <Fill color="[CONFIGURATION.accentColor.1]" />
+            </Rectangle>
+            <!-- Small forward deck structure -->
+            <Rectangle x="32" y="10" width="7" height="7">
+                <Fill color="[CONFIGURATION.accentColor.1]" />
+            </Rectangle>
+            <!-- Bow (front slight raise) -->
+            <Rectangle x="116" y="14" width="4" height="6">
+                <Fill color="[CONFIGURATION.accentColor.1]" />
+            </Rectangle>
+            <!-- Wave lines below hull -->
+            <Line startX="10"  startY="25" endX="28"  endY="22">
+                <Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" />
+            </Line>
+            <Line startX="28"  startY="22" endX="48"  endY="25">
+                <Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" />
+            </Line>
+            <Line startX="60"  startY="25" endX="80"  endY="22">
+                <Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" />
+            </Line>
+            <Line startX="80"  startY="22" endX="100" endY="25">
+                <Stroke color="[CONFIGURATION.accentColor.1]" thickness="1" />
+            </Line>
+        </PartDraw>
+
+        <!-- ============================================================ -->
+        <!-- DATE "SAT 26 OCT" — active only                            -->
+        <!-- ============================================================ -->
+        <PartText x="0" y="238" width="450" height="22">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="17" weight="BOLD"
+                      letterSpacing="0.12" color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%s %s %s]]>
+                        <Parameter expression="[DAY_OF_WEEK_S]" />
+                        <Parameter expression="[DAY_Z]" />
+                        <Parameter expression="[MONTH_S]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- ============================================================ -->
+        <!-- BATTERY BAR — horizontal, wide, segmented — active only     -->
+        <!-- ============================================================ -->
+        <!-- Track/background -->
+        <PartDraw x="105" y="264" width="240" height="10">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <RoundRectangle x="0" y="0" width="240" height="10" cornerRadiusX="3" cornerRadiusY="3">
+                <Fill color="#14FFFFFF" />
+                <Stroke color="[CONFIGURATION.accentColor.2]" thickness="1" />
+            </RoundRectangle>
+        </PartDraw>
+        <!-- 10 fill segments (each 23px wide with 1px gap) -->
+        <PartDraw x="107" y="266" width="22" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 10"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="22" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <PartDraw x="130" y="266" width="22" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 20"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="22" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <PartDraw x="153" y="266" width="22" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 30"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="22" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <PartDraw x="176" y="266" width="22" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 40"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="22" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <PartDraw x="199" y="266" width="22" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 50"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="22" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <PartDraw x="222" y="266" width="22" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 60"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="22" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <PartDraw x="245" y="266" width="22" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 70"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="22" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <PartDraw x="268" y="266" width="22" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 80"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="22" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <PartDraw x="291" y="266" width="22" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 90"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="22" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+        <PartDraw x="314" y="266" width="29" height="6" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Condition expression="[BATTERY_PERCENT] >= 100"><Variant target="alpha" value="255" /></Condition>
+            <Rectangle x="0" y="0" width="29" height="6"><Fill color="[CONFIGURATION.accentColor.0]" /></Rectangle>
+        </PartDraw>
+
+        <!-- Battery percentage text -->
+        <PartText x="0" y="278" width="450" height="20">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="13" weight="BOLD"
+                      color="[CONFIGURATION.accentColor.0]">
+                    <Template><![CDATA[%d%%]]>
+                        <Parameter expression="[BATTERY_PERCENT]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- ============================================================ -->
+        <!-- FLIGHT DECK OPS — active only                               -->
+        <!-- ============================================================ -->
+        <PartText x="0" y="300" width="450" height="22">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="14" weight="BOLD"
+                      letterSpacing="0.20" color="[CONFIGURATION.accentColor.1]">
+                    <Template>FLIGHT DECK OPS</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- Fighter jet icon (Unicode aircraft) — active only -->
+        <PartText x="0" y="322" width="450" height="30">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="26" weight="NORMAL"
+                      color="[CONFIGURATION.accentColor.0]">
+                    <Template>✈</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- ============================================================ -->
+        <!-- AMBIENT ELEMENTS                                             -->
+        <!-- ============================================================ -->
+
+        <!-- Ambient subtitle (dim, below time zone) -->
+        <PartText x="0" y="210" width="450" height="20" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="255" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="13" weight="NORMAL"
+                      letterSpacing="0.14" color="#ff3A3A3A">
+                    <Template>MIDNIGHT CARRIER</Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- Ambient date -->
+        <PartText x="0" y="236" width="450" height="22" alpha="0">
+            <Variant mode="AMBIENT" target="alpha" value="255" />
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="16" weight="NORMAL" color="#ff3A3A3A">
+                    <Template><![CDATA[%s %s %s]]>
+                        <Parameter expression="[DAY_OF_WEEK_S]" />
+                        <Parameter expression="[DAY_Z]" />
+                        <Parameter expression="[MONTH_S]" />
+                    </Template>
+                </Font>
+            </Text>
+        </PartText>
+
+    </Scene>
+</WatchFace>
